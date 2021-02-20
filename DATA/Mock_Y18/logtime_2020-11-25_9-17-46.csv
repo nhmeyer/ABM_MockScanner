@@ -1,0 +1,6 @@
+﻿[Experiment]
+[Routine:Q1][Condition:default][Time(ms):21178.9367])
+[Routine:Q2][Condition:default][Time(ms):21696.2408])
+[Routine:Q1][Condition:Env1][Time(ms):68130.7326])
+[Routine:Q1][Condition:Env2][Time(ms):123471.2383])
+[Routine:Q1][Condition:Env4][Time(ms):177697.1694])

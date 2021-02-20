@@ -1,0 +1,744 @@
+﻿[Experiment]
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F2_Env1][Time(ms):16374.78])
+[Routine:Q2][Condition:default-F2_Env1][Time(ms):22352.6346])
+VALUE 0.444 Time 11.84891
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):49524.6803])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):51975.7144])
+VALUE 0.756 Time 4.648554
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):71972.179])
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):73998.9613])
+VALUE 0.419 Time 4.200133
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):94573.1824])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):99850.6032])
+VALUE 0.697 Time 10.3501
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos2_Env2][Time(ms):125497.0525])
+[Routine:Q2][Condition:default-Catch_Pos2_Env2][Time(ms):130574.2449])
+VALUE 0.593 Time 4.575003
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F7_Env4][Time(ms):150471.3613])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F7_Env4][Time(ms):151248.3389])
+VALUE 0.569 Time 4.698625
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):172295.4618])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):172871.2058])
+VALUE 0.749 Time 1.594087
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):189819.79])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):190446.4679])
+VALUE 0.634 Time 1.794101
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F3_Env4][Time(ms):207568.8981])
+[Routine:Q2][Condition:default-F3_Env4][Time(ms):208170.7851])
+VALUE 0.734 Time 4.148407
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):228643.0394])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):229070.4367])
+VALUE 0.830 Time 1.367016
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F1_Env2][Time(ms):245768.2538])
+[Routine:Q2][Condition:default-F1_Env2][Time(ms):246195.1668])
+VALUE 0.893 Time 6.09961
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F6_Env4][Time(ms):267618.033])
+[Routine:Q2][Condition:default-F6_Env4][Time(ms):268219.6628])
+VALUE 0.830 Time 1.341903
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos1_Env1][Time(ms):285880.2955])
+[Routine:Q2][Condition:default-Catch_Pos1_Env1][Time(ms):286231.5541])
+VALUE 0.848 Time 1.318228
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F2_Env2][Time(ms):302854.8251])
+[Routine:Q2][Condition:default-F2_Env2][Time(ms):304055.5976])
+VALUE 0.811 Time 1.343309
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):320753.3872])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):322506.9837])
+VALUE 0.494 Time 3.897662
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):342753.126])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):343555.5633])
+VALUE 0.898 Time 1.193021
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F5_Env2][Time(ms):360052.5724])
+[Routine:Q2][Condition:default-F5_Env2][Time(ms):360479.1405])
+VALUE 0.898 Time 1.242164
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F1_Env4][Time(ms):377026.7641])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F1_Env4][Time(ms):377578.509])
+VALUE 0.666 Time 4.048955
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F2_Env1][Time(ms):397976.8326])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F2_Env1][Time(ms):398528.5961])
+VALUE 0.898 Time 1.243544
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F7_Env2][Time(ms):415102.2427])
+[Routine:Q2][Condition:default-F7_Env2][Time(ms):415627.2444])
+VALUE 0.882 Time 1.193614
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):432149.9455])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):432652.3668])
+VALUE 1.000 Time 0.7414488
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F2_Env1][Time(ms):449750.51])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F2_Env1][Time(ms):450176.7578])
+VALUE 0.866 Time 1.192304
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):466700.2541])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):467125.9112])
+VALUE 0.882 Time 1.366544
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-Catch2_Env4][Time(ms):483800.3506])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-Catch2_Env4][Time(ms):484326.9573])
+VALUE 0.926 Time 1.016694
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F3_Env1][Time(ms):501673.6591])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F3_Env1][Time(ms):504601.3634])
+VALUE 0.898 Time 1.092772
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F6_Env2][Time(ms):520998.2703])
+[Routine:Q2][Condition:default-F6_Env2][Time(ms):523474.8083])
+VALUE 0.830 Time 1.216704
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos2_Env4][Time(ms):540022.164])
+[Routine:Q2][Condition:default-Catch_Pos2_Env4][Time(ms):540473.7826])
+VALUE 0.610 Time 1.668802
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):558471.8401])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):558948.3728])
+VALUE 0.791 Time 1.218479
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):575495.8937])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):576723.4445])
+VALUE 0.756 Time 4.575055
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F8_Env4][Time(ms):596671.2123])
+[Routine:Q2][Condition:default-F8_Env4][Time(ms):597172.987])
+VALUE 0.978 Time 1.367995
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F6_Env1][Time(ms):614920.7624])
+[Routine:Q2][Condition:default-F6_Env1][Time(ms):615471.5064])
+VALUE 0.830 Time 1.769362
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):632571.8179])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):632997.1288])
+VALUE 0.996 Time 5.350035
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F3_Env4][Time(ms):653669.4756])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F3_Env4][Time(ms):654195.6527])
+VALUE 0.898 Time 1.26914
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F1_Env1][Time(ms):671844.544])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F1_Env1][Time(ms):672371.5828])
+VALUE 0.866 Time 1.718752
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):689394.5349])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):689796.3805])
+VALUE 0.866 Time 1.618089
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F6_Env4][Time(ms):706718.7833])
+[Routine:Q2][Condition:default-F6_Env4][Time(ms):707294.2474])
+VALUE 0.898 Time 1.143669
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F7_Env1][Time(ms):724767.5803])
+[Routine:Q2][Condition:default-F7_Env1][Time(ms):733670.3893])
+VALUE 0.898 Time 1.243741
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):750217.3867])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):750643.1934])
+VALUE 0.866 Time 1.194641
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):767166.0058])
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):767542.2558])
+VALUE 0.866 Time 1.443701
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F4_Env1][Time(ms):785342.3569])
+[Routine:Q2][Condition:default-F4_Env1][Time(ms):785717.5114])
+VALUE 0.950 Time 1.117638
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):802166.2725])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):802742.258])
+VALUE 0.931 Time 4.824754
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F4_Env4][Time(ms):822890.3228])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F4_Env4][Time(ms):823341.6996])
+VALUE 0.913 Time 1.191802
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):840889.7979])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):841492.0963])
+VALUE 0.954 Time 4.92393
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F3_Env2][Time(ms):861737.9361])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F3_Env2][Time(ms):862140.1534])
+VALUE 0.950 Time 1.119576
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):878588.9992])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):879215.4212])
+VALUE 0.939 Time 1.091876
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):896663.16])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):897114.9363])
+VALUE 0.569 Time 4.299209
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F8_Env2][Time(ms):916731.3818])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F8_Env2][Time(ms):917158.3971])
+VALUE 0.610 Time 2.37471
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch1_Env4][Time(ms):934862.3007])
+[Routine:Q2][Condition:default-Catch1_Env4][Time(ms):935289.028])
+VALUE 0.681 Time 1.741987
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F5_Env1][Time(ms):953362.3322])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F5_Env1][Time(ms):953763.4056])
+VALUE 0.866 Time 1.293237
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F8_Env2][Time(ms):970361.5162])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F8_Env2][Time(ms):970762.7458])
+VALUE 0.585 Time 2.044249
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos3_Env4][Time(ms):988136.1723])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-Catch_Pos3_Env4][Time(ms):988487.0984])
+VALUE 0.961 Time 1.443217
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F6_Env1][Time(ms):1006284.8648])
+[Routine:Q2][Condition:default-F6_Env1][Time(ms):1007112.9202])
+VALUE 0.830 Time 1.567379
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F2_Env2][Time(ms):1023985.2021])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F2_Env2][Time(ms):1035612.0292])
+VALUE 0.535 Time 4.423817
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1055358.4132])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1055762.0641])
+VALUE 0.811 Time 3.171317
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F4_Env1][Time(ms):1075309.1951])
+[Routine:Q2][Condition:default-F4_Env1][Time(ms):1075659.4808])
+VALUE 0.560 Time 2.218734
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos1_Env2][Time(ms):1093207.6886])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-Catch_Pos1_Env2][Time(ms):1093584.7817])
+VALUE 0.939 Time 1.14339
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F6_Env4][Time(ms):1110057.7137])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F6_Env4][Time(ms):1110783.9672])
+VALUE 0.756 Time 4.67526
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1131781.787])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1133083.736])
+VALUE 0.777 Time 4.224536
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1152631.1444])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1154083.2418])
+VALUE 0.830 Time 1.441603
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F4_Env4][Time(ms):1170833.2412])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F4_Env4][Time(ms):1171233.1156])
+VALUE 0.950 Time 0.9924674
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos2_Env1][Time(ms):1188630.4667])
+[Routine:Q2][Condition:default-Catch_Pos2_Env1][Time(ms):1188982.1444])
+VALUE 0.950 Time 1.042439
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1205355.965])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1205731.7759])
+VALUE 0.993 Time 5.374949
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1226432.0172])
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1226806.9762])
+VALUE 1.000 Time 1.466758
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1244653.6354])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1245780.332])
+VALUE 0.993 Time 5.676254
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1266778.9185])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1267529.5444])
+VALUE 0.791 Time 1.441686
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1284329.7666])
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1284755.1401])
+VALUE 0.866 Time 1.368963
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1302477.2131])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1302929.1057])
+VALUE 0.749 Time 1.994198
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1320252.9604])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1321379.1983])
+VALUE 0.882 Time 1.317429
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1338028.469])
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1338503.8187])
+VALUE 0.888 Time 4.799025
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1359701.4652])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1361478.5344])
+VALUE 0.898 Time 1.942585
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1378776.795])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1379227.3239])
+VALUE 0.712 Time 5.800195
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F7_Env4][Time(ms):1400351.0589])
+[Routine:Q2][Condition:default-F7_Env4][Time(ms):1401501.865])
+VALUE 0.882 Time 1.293372
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1419174.3125])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1419675.3523])
+VALUE 0.866 Time 1.845087
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1436875.0562])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1437251.1628])
+VALUE 0.913 Time 2.69561
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F1_Env4][Time(ms):1455299.9668])
+[Routine:Q2][Condition:default-F1_Env4][Time(ms):1466601.1196])
+VALUE 0.898 Time 2.995927
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F6_Env1][Time(ms):1485972.6029])
+[Routine:Q2][Condition:default-F6_Env1][Time(ms):1486523.4838])
+VALUE 0.848 Time 1.318825
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F6_Env2][Time(ms):1503174.2682])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F6_Env2][Time(ms):1503574.5977])
+VALUE 0.957 Time 5.52451
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1524422.7724])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1525748.702])
+VALUE 0.882 Time 1.218163
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F1_Env1][Time(ms):1543345.9427])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F1_Env1][Time(ms):1544022.2506])
+VALUE 0.248 Time 3.223095
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1562547.6019])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1562925.4204])
+VALUE 0.519 Time 4.622542
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1582846.842])
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1584547.88])
+VALUE 0.727 Time 1.466038
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F5_Env1][Time(ms):1602344.0267])
+[Routine:Q2][Condition:default-F5_Env1][Time(ms):1603170.9166])
+VALUE 0.770 Time 1.493522
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-Catch2_Env2][Time(ms):1620019.5097])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-Catch2_Env2][Time(ms):1620646.1193])
+VALUE 0.770 Time 1.367517
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1637369.3581])
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1637845.4325])
+VALUE 0.848 Time 1.541713
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F7_Env1][Time(ms):1655767.7964])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F7_Env1][Time(ms):1656094.0764])
+VALUE 0.436 Time 3.474417
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F4_Env2][Time(ms):1674892.9042])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F4_Env2][Time(ms):1675344.1786])
+VALUE 0.848 Time 1.267301
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F5_Env4][Time(ms):1691943.5771])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F5_Env4][Time(ms):1693019.9168])
+VALUE 0.535 Time 2.494211
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1711841.4932])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1712342.5363])
+VALUE 0.791 Time 1.518395
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F5_Env2][Time(ms):1729193.2116])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F5_Env2][Time(ms):1729843.9998])
+VALUE 0.830 Time 1.517282
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1746692.2251])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1747141.9916])
+VALUE 0.798 Time 4.799441
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1768289.7626])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1769217.0424])
+VALUE 0.610 Time 2.418653
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F1_Env2][Time(ms):1786965.9078])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F1_Env2][Time(ms):1787466.9657])
+VALUE 0.791 Time 1.443452
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos1_Env4][Time(ms):1804215.7156])
+[Routine:Q2][Condition:default-Catch_Pos1_Env4][Time(ms):1804690.9282])
+VALUE 0.848 Time 1.517663
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1822563.1747])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1824514.8268])
+VALUE 0.727 Time 1.417488
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F7_Env2][Time(ms):1841239.4454])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F7_Env2][Time(ms):1841815.3086])
+VALUE 0.913 Time 1.217226
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1858389.2073])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1858764.8057])
+VALUE 0.386 Time 2.544374
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-Catch2_Env1][Time(ms):1877648.952])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-Catch2_Env1][Time(ms):1878000.1883])
+VALUE 0.817 Time 4.999722
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F1_Env2][Time(ms):1898324.9036])
+[Routine:Q2][Condition:default-F1_Env2][Time(ms):1898750.7036])
+VALUE 0.882 Time 1.242786
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F8_Env4][Time(ms):1915348.4796])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F8_Env4][Time(ms):1917200.7042])
+VALUE 0.848 Time 2.443192
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F5_Env1][Time(ms):1935973.5525])
+[Routine:Q2][Condition:default-F5_Env1][Time(ms):1936473.9638])
+VALUE 0.784 Time 9.750601
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1961546.8425])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1961972.9545])
+VALUE 0.848 Time 1.24377
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F8_Env4][Time(ms):1978572.0228])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F8_Env4][Time(ms):1978948.0872])
+VALUE 0.866 Time 1.241906
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos3_Env1][Time(ms):1996570.4467])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-Catch_Pos3_Env1][Time(ms):1997072.5489])
+VALUE 0.964 Time 4.750507
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F3_Env2][Time(ms):2017170.9617])
+[Routine:Q2][Condition:default-F3_Env2][Time(ms):2017546.455])
+VALUE 0.970 Time 0.9421797
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2033820.9408])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2034997.0566])
+VALUE 0.860 Time 7.099806
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F8_Env1][Time(ms):2058494.917])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F8_Env1][Time(ms):2059070.9686])
+VALUE 0.939 Time 1.068502
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F2_Env2][Time(ms):2075468.0767])
+[Routine:Q2][Condition:default-F2_Env2][Time(ms):2076019.4428])
+VALUE 0.961 Time 0.9927408
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2092343.9549])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2092745.5197])
+VALUE 0.898 Time 1.266815
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2110341.696])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2110869.0038])
+VALUE 0.882 Time 1.693286
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2127892.2694])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2128268.9751])
+VALUE 0.939 Time 0.99379
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F2_Env4][Time(ms):2144618.2164])
+[Routine:Q2][Condition:default-F2_Env4][Time(ms):2145019.2448])
+VALUE 0.836 Time 4.398852
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2165791.9967])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2166193.1948])
+VALUE 0.817 Time 4.624339
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2186142.2445])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2186567.8579])
+VALUE 0.882 Time 1.243804
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F2_Env4][Time(ms):2203166.7285])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F2_Env4][Time(ms):2203743.1501])
+VALUE 0.866 Time 1.291186
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-Catch1_Env1][Time(ms):2221439.6255])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-Catch1_Env1][Time(ms):2221865.3655])
+VALUE 0.704 Time 1.895184
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch1_Env2][Time(ms):2239102.9872])
+[Routine:Q2][Condition:default-Catch1_Env2][Time(ms):2239479.5338])
+VALUE 0.961 Time 0.916103
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F5_Env4][Time(ms):2255702.9163])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-F5_Env4][Time(ms):2256128.9617])
+VALUE 0.791 Time 2.820913
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2275325.5713])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2275776.5993])
+VALUE 0.791 Time 1.368255
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F3_Env2][Time(ms):2292475.1081])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F3_Env2][Time(ms):2292826.6205])
+VALUE 0.950 Time 1.14304
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F3_Env4][Time(ms):2309324.5402])
+[Routine:Q2][Condition:default-F3_Env4][Time(ms):2309651.0399])
+VALUE 0.882 Time 1.166617
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F3_Env1][Time(ms):2327148.955])
+[Routine:Q2][Condition:default-F3_Env1][Time(ms):2328851.8861])
+VALUE 0.323 Time 4.398595
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-F4_Env2][Time(ms):2348548.9975])
+[Routine:Q2][Condition:default-F4_Env2][Time(ms):2350025.8241])
+VALUE 0.749 Time 1.493008
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2366873.8121])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2368174.6231])
+VALUE 0.697 Time 7.300625
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F8_Env1][Time(ms):2391847.2853])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F8_Env1][Time(ms):2392249.0422])
+VALUE 0.848 Time 1.293034
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2408897.4442])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2409473.976])
+VALUE 0.666 Time 5.499277
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2430297.4903])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2430823.9])
+VALUE 0.898 Time 1.31688
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2448521.2972])
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2449046.923])
+VALUE 0.882 Time 1.44327
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F5_Env2][Time(ms):2465822.0088])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F5_Env2][Time(ms):2466546.434])
+VALUE 0.666 Time 4.324312
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2486220.4299])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2487046.15])
+VALUE 0.882 Time 1.867581
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2505268.663])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2505820.6919])
+VALUE 0.866 Time 1.218402
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-Catch_Pos3_Env2][Time(ms):2522389.9411])
+[Routine:Q2][Condition:default-Catch_Pos3_Env2][Time(ms):2523318.6355])
+VALUE 0.798 Time 4.550368
+VALUE 0.000 Time 0
+VALUE 0.000 Time 0
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2543218.2567])
+VALUE 1.000 Time 0
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2545120.7756])
+VALUE 0.848 Time 1.217193
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F4_Env1][Time(ms):2562692.4645])
+[Routine:Q2][Condition:default-F4_Env1][Time(ms):2563895.0754])
+VALUE 0.848 Time 1.341504
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2580567.6018])
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2582370.9312])
+VALUE 0.206 Time 3.346265
+VALUE 1.000 Time 0
+VALUE 1.000 Time 0
+[Routine:Q1][Condition:default-F4_Env4][Time(ms):2601041.5224])
+VALUE 0.000 Time 0
+[Routine:Q2][Condition:default-F4_Env4][Time(ms):2603469.1142])
+VALUE 0.882 Time 1.242428
+[Routine:DifficultyQ][Condition:ENV1][Time(ms):2604737.9578])
+VALUE 0.804 Time 20.63022
+[Routine:DifficultyQ][Condition:ENV4][Time(ms):2625393.5473])
+VALUE 0.609 Time 16.62416
+[Routine:DifficultyQ][Condition:ENV2][Time(ms):2642042.9781])
+VALUE 0.394 Time 10.54975
+VALUE 0.394 Time 11.32505

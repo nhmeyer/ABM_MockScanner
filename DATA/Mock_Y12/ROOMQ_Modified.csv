@@ -1,0 +1,548 @@
+﻿[Experiment];;;
+[Routine:Q1][Condition:default-F6_Env1][Time(ms):538144.9635]);;;
+VALUEQ1;0;Time;0
+[Routine:Q2][Condition:default-F6_Env1][Time(ms):545436.6993]);;;
+VALUE;0.115;Time;3.899881
+[Routine:Q1][Condition:default-F5_Env2][Time(ms):564612.0022]);;;
+valueq1;1;Time;9 660.802
+[Routine:Q2][Condition:default-F5_Env2][Time(ms):574274.026]);;;
+VALUE;0.213;Time;3.999302
+[Routine:Q1][Condition:default-F8_Env4][Time(ms):593561.2839]);;;
+valueq1;1;Time;5 003.269
+[Routine:Q2][Condition:default-F8_Env4][Time(ms):595810.7826]);;;
+VALUE;0.544;Time;4.586613
+[Routine:Q1][Condition:default-F4_Env1][Time(ms):615709.7725]);;;
+valueq1;1;Time;5 009.507
+[Routine:Q2][Condition:default-F4_Env1][Time(ms):621723.1415]);;;
+VALUE;0.315;Time;2.735892
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):639735.9141]);;;
+valueq1;0;Time;4 573.706
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):644310.958]);;;
+VALUE;0.277;Time;5.886165
+[Routine:Q1][Condition:default-F7_Env4][Time(ms):665483.1712]);;;
+valueq1;1;Time;3 037.407
+[Routine:Q2][Condition:default-F7_Env4][Time(ms):668522.1915]);;;
+VALUE;0.444;Time;4.624236
+[Routine:Q1][Condition:default-Catch_Pos1_Env1][Time(ms):688470.0342]);;;
+valueq1;0;Time;7 424.113
+[Routine:Q2][Condition:default-Catch_Pos1_Env1][Time(ms):695895.5729]);;;
+VALUE;0.186;Time;2.473869
+[Routine:Q1][Condition:default-Catch1_Env2][Time(ms):713657.4217]);;;
+valueq1;1;Time;3 337.126
+[Routine:Q2][Condition:default-Catch1_Env2][Time(ms):716996.0969]);;;
+VALUE;0.186;Time;3.647806
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):735944.8306]);;;
+valueq1;1;Time;5 013.695
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):739069.4834]);;;
+VALUE;0.362;Time;4.461278
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):758819.0297]);;;
+valueq1;0;Time;3 024.894
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):761845.4657]);;;
+VALUE;0.226;Time;2.273056
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):779418.8392]);;;
+valueq1;1;Time;1 335.488
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):780755.6024]);;;
+VALUE;0.255;Time;3.948989
+[Routine:Q1][Condition:default-F5_Env4][Time(ms):800005.4821]);;;
+valueq1;1;Time;5 003.130
+[Routine:Q2][Condition:default-F5_Env4][Time(ms):801942.8291]);;;
+VALUE;0.315;Time;2.798627
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):820066.4753]);;;
+valueq1;0;Time;5 300.071
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):825368.3869]);;;
+VALUE;0.248;Time;2.44822
+[Routine:Q1][Condition:default-F6_Env2][Time(ms):843141.8014]);;;
+valueq1;1;Time;849.486
+[Routine:Q2][Condition:default-F6_Env2][Time(ms):843992.5911]);;;
+VALUE;0.494;Time;5.68616
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):864977.9487]);;;
+valueq1;1;Time;5 001.523
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):866566.3027]);;;
+VALUE;0.354;Time;7.349179
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):889265.6443]);;;
+valueq1;0;Time;786.597
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):890053.724]);;;
+VALUE;0.248;Time;2.246989
+[Routine:Q1][Condition:default-F3_Env2][Time(ms):907603.2843]);;;
+valueq1;1;Time;948.127
+[Routine:Q2][Condition:default-F3_Env2][Time(ms):908552.8213]);;;
+VALUE;0.469;Time;3.949064
+[Routine:Q1][Condition:default-F6_Env4][Time(ms):927801.0462]);;;
+valueq1;1;Time;5 001.122
+[Routine:Q2][Condition:default-F6_Env4][Time(ms):929426.5163]);;;
+VALUE;0.248;Time;3.549411
+[Routine:Q1][Condition:default-F8_Env1][Time(ms):948264.1136]);;;
+valueq1;0;Time;1 898.017
+[Routine:Q2][Condition:default-F8_Env1][Time(ms):950163.5481]);;;
+VALUE;0.248;Time;2.173611
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):967625.4557]);;;
+valueq1;1;Time;3 187.329
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):970813.8483]);;;
+VALUE;0.323;Time;3.910809
+[Routine:Q1][Condition:default-F4_Env4][Time(ms):989999.8232]);;;
+valueq1;1;Time;5 001.398
+[Routine:Q2][Condition:default-F4_Env4][Time(ms):992576.1538]);;;
+VALUE;0.206;Time;2.498514
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1010399.0251]);;;
+valueq1;0;Time;1 136.794
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1011537.2686]);;;
+VALUE;0.323;Time;4.874249
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1031700.1373]);;;
+valueq1;1;Time;1 047.096
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1032749.2113]);;;
+VALUE;0.494;Time;4.84927
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1052897.391]);;;
+valueq1;1;Time;5 002.368
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1055173.6797]);;;
+VALUE;0.411;Time;2.009773
+[Routine:Q1][Condition:default-F8_Env1][Time(ms):1072497.7973]);;;
+valueq1;0;Time;612.069
+[Routine:Q2][Condition:default-F8_Env1][Time(ms):1073111.5427]);;;
+VALUE;0.307;Time;6.811637
+[Routine:Q1][Condition:default-F1_Env2][Time(ms):1095221.9365]);;;
+valueq1;1;Time;1 674.175
+[Routine:Q2][Condition:default-F1_Env2][Time(ms):1096897.6151]);;;
+VALUE;0.362;Time;1.997726
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1114196.697]);;;
+valueq1;1;Time;5 001.244
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1115135.1086]);;;
+VALUE;0.323;Time;3.911569
+[Routine:Q1][Condition:default-F2_Env1][Time(ms):1134346.1699]);;;
+valueq1;1;Time;5 013.373
+[Routine:Q2][Condition:default-F2_Env1][Time(ms):1135008.4698]);;;
+VALUE;0.798;Time;6.074888
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1156370.9975]);;;
+valueq1;0;Time;1 485.857
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1157858.3381]);;;
+VALUE;0.248;Time;2.185368
+[Routine:Q1][Condition:default-F1_Env4][Time(ms):1175356.8928]);;;
+valueq1;1;Time;912.222
+[Routine:Q2][Condition:default-F1_Env4][Time(ms):1176270.2988]);;;
+VALUE;0.292;Time;2.047512
+[Routine:Q1][Condition:default-Catch1_Env1][Time(ms):1193608.1785]);;;
+valueq1;1;Time;5 011.732
+[Routine:Q2][Condition:default-Catch1_Env1][Time(ms):1194294.8129]);;;
+VALUE;0.836;Time;4.599808
+[Routine:Q1][Condition:default-F7_Env2][Time(ms):1214193.7662]);;;
+valueq1;0;Time;1 012.359
+[Routine:Q2][Condition:default-F7_Env2][Time(ms):1215207.4511]);;;
+VALUE;0.354;Time;8.611245
+[Routine:Q1][Condition:default-F8_Env4][Time(ms):1239119.0718]);;;
+valueq1;1;Time;586.883
+[Routine:Q2][Condition:default-F8_Env4][Time(ms):1239707.176]);;;
+VALUE;0.634;Time;1.797099
+[Routine:Q1][Condition:default-Catch_Pos2_Env1][Time(ms):1256805.5493]);;;
+valueq1;0;Time;1 711.376
+[Routine:Q2][Condition:default-Catch_Pos2_Env1][Time(ms):1258518.9268]);;;
+VALUE;0.658;Time;4.436803
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1278242.3656]);;;
+valueq1;0;Time;5 001.961
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1278793.6721]);;;
+VALUE;0.535;Time;1.70915
+[Routine:Q1][Condition:default-F6_Env4][Time(ms):1295804.7619]);;;
+valueq1;1;Time;623.953
+[Routine:Q2][Condition:default-F6_Env4][Time(ms):1296430.0639]);;;
+VALUE;0.485;Time;1.747825
+[Routine:Q1][Condition:default-F6_Env1][Time(ms):1313477.9105]);;;
+valueq1;0;Time;1 574.845
+[Routine:Q2][Condition:default-F6_Env1][Time(ms):1315054.3222]);;;
+VALUE;0.634;Time;3.110761
+[Routine:Q1][Condition:default-F4_Env2][Time(ms):1333466.9722]);;;
+valueq1;0;Time;5 001.769
+[Routine:Q2][Condition:default-F4_Env2][Time(ms):1334141.4663]);;;
+VALUE;0.585;Time;1.622753
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1351065.7739]);;;
+valueq1;0;Time;5 002.833
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1352028.8834]);;;
+VALUE;0.226;Time;2.097265
+[Routine:Q1][Condition:default-F2_Env1][Time(ms):1369451.6767]);;;
+valueq1;1;Time;750.232
+[Routine:Q2][Condition:default-F2_Env1][Time(ms):1370203.0041]);;;
+VALUE;0.811;Time;1.446889
+[Routine:Q1][Condition:default-Catch_Pos2_Env2][Time(ms):1386938.9405]);;;
+valueq1;0;Time;599.238
+[Routine:Q2][Condition:default-Catch_Pos2_Env2][Time(ms):1387539.4101]);;;
+VALUE;0.585;Time;1.584851
+[Routine:Q1][Condition:default-F7_Env4][Time(ms):1404413.7546]);;;
+valueq1;0;Time;5 004.113
+[Routine:Q2][Condition:default-F7_Env4][Time(ms):1405401.7114]);;;
+VALUE;0.338;Time;1.835533
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1422550.9913]);;;
+valueq1;0;Time;5 009.286
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1423676.0657]);;;
+VALUE;0.791;Time;2.548408
+[Routine:Q1][Condition:default-F1_Env2][Time(ms):1441513.1277]);;;
+valueq1;1;Time;1 060.908
+[Routine:Q2][Condition:default-F1_Env2][Time(ms):1442575.6306]);;;
+VALUE;0.882;Time;1.235503
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1459112.9545]);;;
+valueq1;0;Time;1 436.048
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1460550.51]);;;
+VALUE;0.362;Time;1.960531
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1477823.7061]);;;
+valueq1;0;Time;5 011.473
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1478398.6992]);;;
+VALUE;0.817;Time;5.587147
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1499287.908]);;;
+valueq1;1;Time;1 259.717
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1500549.0319]);;;
+VALUE;0.65;Time;10.46201
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1526310.3608]);;;
+valueq1;0;Time;736.85
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1527048.4646]);;;
+VALUE;0.51;Time;1.99803
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1544347.2986]);;;
+valueq1;0;Time;5 006.087
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1545185.2353]);;;
+VALUE;0.681;Time;1.585077
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1562059.4949]);;;
+valueq1;1;Time;561.785
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1562622.614]);;;
+VALUE;0.51;Time;2.460738
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1580383.4294]);;;
+valueq1;0;Time;750.007
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1581134.6233]);;;
+VALUE;0.338;Time;1.997074
+[Routine:Q1][Condition:default-F7_Env1][Time(ms):1598432.9154]);;;
+valueq1;1;Time;600.021
+[Routine:Q2][Condition:default-F7_Env1][Time(ms):1599034.2844]);;;
+VALUE;0.658;Time;1.771975
+[Routine:Q1][Condition:default-F3_Env2][Time(ms):1616108.664]);;;
+valueq1;1;Time;5 004.076
+[Routine:Q2][Condition:default-F3_Env2][Time(ms):1617195.789]);;;
+VALUE;0.681;Time;1.648165
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1634132.1144]);;;
+valueq1;0;Time;849.095
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1634982.5425]);;;
+VALUE;0.51;Time;2.848716
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1653132.385]);;;
+valueq1;0;Time;5 008.303
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1654045.9384]);;;
+VALUE;0.585;Time;2.509299
+[Routine:Q1][Condition:default-F8_Env2][Time(ms):1671856.6725]);;;
+valueq1;1;Time;836.717
+[Routine:Q2][Condition:default-F8_Env2][Time(ms):1672694.9199]);;;
+VALUE;0.338;Time;1.922013
+[Routine:Q1][Condition:default-Catch1_Env4][Time(ms):1689905.2184]);;;
+valueq1;1;Time;5 002.140
+[Routine:Q2][Condition:default-Catch1_Env4][Time(ms):1690518.2825]);;;
+VALUE;0.51;Time;1.897516
+[Routine:Q1][Condition:default-Catch_Pos3_Env1][Time(ms):1707743.1863]);;;
+valueq1;1;Time;5 003.012
+[Routine:Q2][Condition:default-Catch_Pos3_Env1][Time(ms):1708430.6847]);;;
+VALUE;0.362;Time;1.873192
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1725605.799]);;;
+valueq1;0;Time;660.221
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1726267.5813]);;;
+VALUE;0.436;Time;2.836197
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1744404.4203]);;;
+valueq1;0;Time;5 002.708
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1745104.7969]);;;
+VALUE;0.338;Time;1.847645
+[Routine:Q1][Condition:default-F7_Env1][Time(ms):1762266.0366]);;;
+valueq1;0;Time;5 001.568
+[Routine:Q2][Condition:default-F7_Env1][Time(ms):1762929.4696]);;;
+VALUE;0.56;Time;1.822831
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1780053.4996]);;;
+valueq1;0;Time;5 001.482
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1780741.9922]);;;
+VALUE;0.46;Time;2.947657
+[Routine:Q1][Condition:default-F6_Env4][Time(ms):1798990.0952]);;;
+valueq1;0;Time;5 012.882
+[Routine:Q2][Condition:default-F6_Env4][Time(ms):1799590.8128]);;;
+VALUE;0.362;Time;1.822375
+[Routine:Q1][Condition:default-F4_Env1][Time(ms):1816702.1722]);;;
+valueq1;1;Time;548.895
+[Routine:Q2][Condition:default-F4_Env1][Time(ms):1817252.5695]);;;
+VALUE;0.411;Time;1.922505
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1834477.4779]);;;
+valueq1;0;Time;924.708
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1835403.5388]);;;
+VALUE;0.362;Time;1.871664
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):1852589.0447]);;;
+valueq1;0;Time;5 012.145
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):1853789.7534]);;;
+VALUE;0.315;Time;1.909139
+[Routine:Q1][Condition:default-F1_Env1][Time(ms):1871001.6741]);;;
+valueq1;1;Time;560.951
+[Routine:Q2][Condition:default-F1_Env1][Time(ms):1871563.8451]);;;
+VALUE;0.51;Time;1.697066
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):1888550.6922]);;;
+valueq1;0;Time;586.392
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):1889138.4802]);;;
+VALUE;0.338;Time;1.885236
+[Routine:Q1][Condition:default-F2_Env4][Time(ms):1906323.7846]);;;
+valueq1;1;Time;862.146
+[Routine:Q2][Condition:default-F2_Env4][Time(ms):1907187.1023]);;;
+VALUE;0.485;Time;1.772755
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1924287.2615]);;;
+valueq1;0;Time;661.103
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1924949.7999]);;;
+VALUE;0.712;Time;6.963158
+[Routine:Q1][Condition:default-F4_Env2][Time(ms):1947199.3597]);;;
+valueq1;0;Time;5 002.338
+[Routine:Q2][Condition:default-F4_Env2][Time(ms):1947862.3169]);;;
+VALUE;0.666;Time;4.761935
+[Routine:Q1][Condition:default-F8_Env4][Time(ms):1967898.4159]);;;
+valueq1;0;Time;5 001.375
+[Routine:Q2][Condition:default-F8_Env4][Time(ms):1968561.2558]);;;
+VALUE;0.46;Time;1.885473
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):1985735.5803]);;;
+valueq1;0;Time;5 009.381
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):1986235.9937]);;;
+VALUE;0.485;Time;1.721873
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2003247.9851]);;;
+valueq1;1;Time;561.704
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2003811.1145]);;;
+VALUE;0.61;Time;1.583704
+[Routine:Q1][Condition:default-Catch_Pos2_Env4][Time(ms):2020697.231]);;;
+valueq1;0;Time;1 085.469
+[Routine:Q2][Condition:default-Catch_Pos2_Env4][Time(ms):2021784.2662]);;;
+VALUE;0.51;Time;5.236873
+[Routine:Q1][Condition:default-F3_Env1][Time(ms):2042345.8152]);;;
+valueq1;1;Time;549.635
+[Routine:Q2][Condition:default-F3_Env1][Time(ms):2042896.5782]);;;
+VALUE;0.61;Time;1.872892
+[Routine:Q1][Condition:default-Catch_Pos3_Env2][Time(ms):2060046.8822]);;;
+valueq1;1;Time;5 002.606
+[Routine:Q2][Condition:default-Catch_Pos3_Env2][Time(ms):2060884.0794]);;;
+VALUE;0.61;Time;1.62176
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2077794.7041]);;;
+valueq1;0;Time;673.894
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2078469.947]);;;
+VALUE;0.535;Time;1.585419
+[Routine:Q1][Condition:default-F1_Env1][Time(ms):2095344.6776]);;;
+valueq1;1;Time;536.953
+[Routine:Q2][Condition:default-F1_Env1][Time(ms):2095883.2223]);;;
+VALUE;0.51;Time;1.696691
+[Routine:Q1][Condition:default-Catch2_Env2][Time(ms):2112869.3289]);;;
+valueq1;1;Time;5 002.004
+[Routine:Q2][Condition:default-Catch2_Env2][Time(ms):2113394.9584]);;;
+VALUE;0.46;Time;1.684642
+[Routine:Q1][Condition:default-F2_Env4][Time(ms):2130369.0321]);;;
+valueq1;1;Time;5 002.689
+[Routine:Q2][Condition:default-F2_Env4][Time(ms):2131181.2658]);;;
+VALUE;0.444;Time;4.261846
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2150768.5045]);;;
+valueq1;0;Time;623.665
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2151393.6489]);;;
+VALUE;0.681;Time;1.434541
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2168118.2637]);;;
+valueq1;1;Time;636.003
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2168756.4266]);;;
+VALUE;0.485;Time;1.647193
+[Routine:Q1][Condition:default-F3_Env4][Time(ms):2185691.4512]);;;
+valueq1;1;Time;5 000.907
+[Routine:Q2][Condition:default-F3_Env4][Time(ms):2186304.2691]);;;
+VALUE;0.535;Time;1.710328
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2203329.4281]);;;
+valueq1;0;Time;549.267
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2203880.046]);;;
+VALUE;0.519;Time;3.948556
+[Routine:Q1][Condition:default-F8_Env2][Time(ms):2223116.5253]);;;
+valueq1;1;Time;524.175
+[Routine:Q2][Condition:default-F8_Env2][Time(ms):2223641.8137]);;;
+VALUE;0.46;Time;1.735303
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2240690.7089]);;;
+valueq1;0;Time;322.859
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2241015.0269]);;;
+VALUE;0.502;Time;6.637226
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2262989.7939]);;;
+valueq1;0;Time;5 012.863
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2263403.4894]);;;
+VALUE;0.61;Time;1.697202
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2280415.1192]);;;
+valueq1;1;Time;447.954
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2280865.1435]);;;
+VALUE;0.46;Time;1.872882
+[Routine:Q1][Condition:default-F4_Env4][Time(ms):2298039.3298]);;;
+valueq1;1;Time;5 003.193
+[Routine:Q2][Condition:default-F4_Env4][Time(ms):2298727.6109]);;;
+VALUE;0.386;Time;1.996939
+[Routine:Q1][Condition:default-F5_Env1][Time(ms):2316038.6267]);;;
+valueq1;0;Time;1 862.520
+[Routine:Q2][Condition:default-F5_Env1][Time(ms):2317902.71]);;;
+VALUE;0.485;Time;1.721332
+[Routine:Q1][Condition:default-F5_Env2][Time(ms):2334913.8851]);;;
+valueq1;1;Time;586.706
+[Routine:Q2][Condition:default-F5_Env2][Time(ms):2335501.7064]);;;
+VALUE;0.494;Time;3.985628
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2354787.1901]);;;
+valueq1;0;Time;637.258
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2355425.6589]);;;
+VALUE;0.494;Time;4.06138
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2374787.28]);;;
+valueq1;0;Time;5 008.121
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2375324.9261]);;;
+VALUE;0.56;Time;2.91126
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2393536.53]);;;
+valueq1;0;Time;5 001.067
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2394099.38]);;;
+VALUE;0.585;Time;2.473823
+[Routine:Q1][Condition:default-Catch_Pos3_Env4][Time(ms):2411860.3224]);;;
+valueq1;1;Time;487.25
+[Routine:Q2][Condition:default-Catch_Pos3_Env4][Time(ms):2412348.9486]);;;
+VALUE;0.673;Time;7.111703
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2434798.0854]);;;
+valueq1;0;Time;511.916
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2435311.556]);;;
+VALUE;0.544;Time;6.412057
+[Routine:Q1][Condition:default-F2_Env2][Time(ms):2457035.4111]);;;
+valueq1;1;Time;661.106
+[Routine:Q2][Condition:default-F2_Env2][Time(ms):2457697.7659]);;;
+VALUE;0.585;Time;1.847985
+[Routine:Q1][Condition:default-Catch2_Env4][Time(ms):2474833.3615]);;;
+valueq1;1;Time;5 004.141
+[Routine:Q2][Condition:default-Catch2_Env4][Time(ms):2475872.3034]);;;
+VALUE;0.634;Time;1.622211
+[Routine:Q1][Condition:default-F5_Env1][Time(ms):2492784.5999]);;;
+valueq1;0;Time;487.026
+[Routine:Q2][Condition:default-F5_Env1][Time(ms):2493272.8873]);;;
+VALUE;0.727;Time;1.521894
+[Routine:Q1][Condition:default-F3_Env2][Time(ms):2510084.2896]);;;
+valueq1;1;Time;498.614
+[Routine:Q2][Condition:default-F3_Env2][Time(ms):2510584.0915]);;;
+VALUE;0.535;Time;1.609945
+[Routine:Q1][Condition:default-F4_Env4][Time(ms):2527494.8377]);;;
+valueq1;1;Time;5 013.164
+[Routine:Q2][Condition:default-F4_Env4][Time(ms):2528120.6743]);;;
+VALUE;0.61;Time;1.735259
+[Routine:Q1][Condition:default-F3_Env1][Time(ms):2545157.0995]);;;
+valueq1;1;Time;5 004.807
+[Routine:Q2][Condition:default-F3_Env1][Time(ms):2545857.7462]);;;
+VALUE;0.61;Time;1.547284
+[Routine:Q1][Condition:default-F5_Env2][Time(ms):2562706.7694]);;;
+valueq1;1;Time;5 003.636
+[Routine:Q2][Condition:default-F5_Env2][Time(ms):2563319.8958]);;;
+VALUE;0.658;Time;1.597309
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2580206.645]);;;
+valueq1;0;Time;523.62
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2580731.8114]);;;
+VALUE;0.51;Time;1.772524
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2597805.8075]);;;
+valueq1;0;Time;5 008.652
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2598294.999]);;;
+VALUE;0.56;Time;1.670871
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2615255.9328]);;;
+valueq1;0;Time;5 002.872
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2615731.1501]);;;
+VALUE;0.46;Time;1.859797
+[Routine:Q1][Condition:default-F3_Env4][Time(ms):2632904.6791]);;;
+valueq1;0;Time;5 001.500
+[Routine:Q2][Condition:default-F3_Env4][Time(ms):2633616.976]);;;
+VALUE;0.059;Time;3.563291
+[Routine:Q1][Condition:default-F5_Env1][Time(ms):2652479.9739]);;;
+valueq1;0;Time;5 010.598
+[Routine:Q2][Condition:default-F5_Env1][Time(ms):2653017.2645]);;;
+VALUE;0.436;Time;1.82308
+[Routine:Q1][Condition:default-F1_Env2][Time(ms):2670155.1211]);;;
+valueq1;1;Time;510.822
+[Routine:Q2][Condition:default-F1_Env2][Time(ms):2670667.636]);;;
+VALUE;0.51;Time;1.709394
+[Routine:Q1][Condition:default-Catch_Pos1_Env4][Time(ms):2687678.5139]);;;
+valueq1;0;Time;463.083
+[Routine:Q2][Condition:default-Catch_Pos1_Env4][Time(ms):2688142.8396]);;;
+VALUE;0.51;Time;1.708828
+[Routine:Q1][Condition:default-F2_Env1][Time(ms):2705165.694]);;;
+valueq1;1;Time;499.081
+[Routine:Q2][Condition:default-F2_Env1][Time(ms):2705666.2559]);;;
+VALUE;0.61;Time;1.53439
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2722502.8827]);;;
+valueq1;0;Time;524.212
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2723028.6399]);;;
+VALUE;0.544;Time;3.960723
+[Routine:Q1][Condition:default-F5_Env4][Time(ms):2742277.2175]);;;
+valueq1;0;Time;5 002.621
+[Routine:Q2][Condition:default-F5_Env4][Time(ms):2742839.9317]);;;
+VALUE;0.535;Time;1.74736
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2759876.8134]);;;
+valueq1;0;Time;5 006.012
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2762452.0124]);;;
+VALUE;0.51;Time;1.647794
+[Routine:Q1][Condition:default-F7_Env2][Time(ms):2779401.6946]);;;
+valueq1;1;Time;635.599
+[Routine:Q2][Condition:default-F7_Env2][Time(ms):2780038.7642]);;;
+VALUE;0.585;Time;1.635182
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2796975.568]);;;
+valueq1;0;Time;4 286.642
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2801263.6095]);;;
+VALUE;0.427;Time;7.437312
+[Routine:Q1][Condition:default-Catch2_Env1][Time(ms):2824036.4193]);;;
+valueq1;1;Time;411.819
+[Routine:Q2][Condition:default-Catch2_Env1][Time(ms):2824449.6528]);;;
+VALUE;0.51;Time;1.76045
+[Routine:Q1][Condition:default-F2_Env2][Time(ms):2841524.8191]);;;
+valueq1;1;Time;5 002.513
+[Routine:Q2][Condition:default-F2_Env2][Time(ms):2842000.275]);;;
+VALUE;0.535;Time;1.747475
+[Routine:Q1][Condition:default-F3_Env4][Time(ms):2859049.0577]);;;
+valueq1;1;Time;5 001.276
+[Routine:Q2][Condition:default-F3_Env4][Time(ms):2859536.3651]);;;
+VALUE;0.485;Time;1.884781
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2876747.9635]);;;
+valueq1;0;Time;561.347
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2877310.6224]);;;
+VALUE;0.704;Time;1.52247
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):2894148.5313]);;;
+valueq1;0;Time;5 003.596
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):2894411.9831]);;;
+VALUE;0.61;Time;1.596331
+[Routine:Q1][Condition:default-F1_Env4][Time(ms):2911297.1796]);;;
+valueq1;1;Time;449.094
+[Routine:Q2][Condition:default-F1_Env4][Time(ms):2911747.4642]);;;
+VALUE;0.56;Time;1.684959
+[Routine:Q1][Condition:default-F4_Env1][Time(ms):2928759.1501]);;;
+valueq1;1;Time;5 012.005
+[Routine:Q2][Condition:default-F4_Env1][Time(ms):2929296.8803]);;;
+VALUE;0.56;Time;1.685779
+[Routine:Q1][Condition:default-Catch_Pos1_Env2][Time(ms):2946271.5858]);;;
+valueq1;0;Time;673.258
+[Routine:Q2][Condition:default-Catch_Pos1_Env2][Time(ms):2946947.0679]);;;
+VALUE;0.51;Time;1.685046
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):2963920.8231]);;;
+valueq1;0;Time;5 002.760
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):2964434.6585]);;;
+VALUE;0.585;Time;1.54609
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2981295.2558]);;;
+valueq1;0;Time;5 006.466
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):2981795.817]);;;
+VALUE;0.634;Time;2.973648
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):3000070.7085]);;;
+valueq1;0;Time;5 003.888
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):3000533.7686]);;;
+VALUE;0.585;Time;1.57119
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):3017394.1825]);;;
+valueq1;0;Time;5 001.093
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):3017831.7314]);;;
+VALUE;0.56;Time;1.598456
+[Routine:Q1][Condition:default-F6_Env1][Time(ms):3034743.2444]);;;
+valueq1;0;Time;5 005.884
+[Routine:Q2][Condition:default-F6_Env1][Time(ms):3035219.4281]);;;
+VALUE;0.56;Time;1.597419
+valueq1;0;Time;5 002.339
+[Routine:Q1][Condition:default-F6_Env2][Time(ms):3052118.8192]);;;
+valueq1;1;Time;386.228
+[Routine:Q2][Condition:default-F6_Env2][Time(ms):3052506.7448]);;;
+VALUE;0.485;Time;1.709797
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):3069517.3374]);;;
+valueq1;0;Time;624.114
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):3070142.844]);;;
+VALUE;0.673;Time;6.913323
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):3092379.8121]);;;
+valueq1;1;Time;573.396
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):3092954.4914]);;;
+VALUE;0.61;Time;1.635038
+[Routine:Q1][Condition:default-F2_Env2][Time(ms):3109892.4861]);;;
+valueq1;1;Time;5 002.032
+[Routine:Q2][Condition:default-F2_Env2][Time(ms):3110417.691]);;;
+VALUE;0.634;Time;1.546732
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):3127266.6599]);;;
+valueq1;0;Time;423.783
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):3127691.7544]);;;
+VALUE;0.61;Time;1.560459
+[Routine:DifficultyQ][Condition:ENV2][Time(ms):3129265.277]);;;
+VALUE;0.673;Time;7.576792
+[Routine:DifficultyQ][Condition:ENV1][Time(ms):3136855.4466]);;;
+VALUE;0.626;Time;6.323545
+[Routine:DifficultyQ][Condition:ENV4][Time(ms):3143191.2237]);;;
+VALUE;0.65;Time;6.800255
