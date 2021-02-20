@@ -1,0 +1,1797 @@
+---
+title: "Mock_Memory_MainPlot_210121"
+author: "N.H.Meyer"
+date: "21/01/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(plyr)
+library(dplyr)
+library(ggplot2)
+library(readxl)
+library("ggpubr")
+library(lme4)
+# library(plotly)
+library(broom)
+library(rstatix)
+#library(tidyverse)
+library(emmeans)
+#library(lmerTest)
+library(egg)
+```
+
+## R Markdown
+In this script, we want to analyze the data obtained at the mock scanner where we tested a within subject design in young healthy participants to better understand the impact of bodily self-consciousness on episodic memory. Participants are encoding three different scene in three different conditions ( 1PP synch, 1PP asynch and 3 PP asynch)
+In this script we are going to analyze 
+episodic memory performance (Performance/hit/CR/Dprime/Cprime)
+BSC ratings
+the effect of side/perspective and synchrony on the error made per objects
+
+1) Let's start with the episodic memory performance!
+
+```{r cars}
+Data <- read_xlsx(("Analysis_Mock_YoungHealthy_020221_FullSample_Last_trials.xlsx"),sheet = 2, range = "A2:V1171", col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+colnames(Data) <- c("ID","Hit","Miss","FalseAlarm","CorrectRejection","N_True","N_False","Environment","Conditions","Answer","Performance","PerformanceHitCR","Trials","Ownership","Agency","Control1","Control2","Threat","MeanQ1","MeanQ2","Synch","Perspective")
+Ntrials = 15 # here you put the number of total trials: 40 if you dont count catch trials, 45 otherwise
+
+#remove outliers:
+#Data      <- Data[Data$ID != 'Mock_Y20',] # super low score of performance less than 50% in 2 conditions
+Data      <- Data[Data$ID != 'Mock_Y30',] # super low score of performance less than 50% in 2 conditions
+Data      <- Data[Data$ID != 'Mock_Y18',] # Technical bug of tracking during BSC
+Data      <- Data[Data$ID != 'Mock_Y14',] #technical bug: mismatch between skin color (dark) and avatar skin color
+Data      <- Data[Data$ID != 'Mock_Y06',] #Answered always that the environment changed  
+#Let's convert these parameters into factor
+Data$Conditions   <- factor(Data$Conditions)
+Data$Environment   <- factor(Data$Environment)
+Data$PerformanceHitCR <- factor(Data$PerformanceHitCR)
+
+#Let's divide the conditions into synch vs asynch and 1PP vs 3pp
+Data$Synch[Data$Conditions == "SYNCH1PP"] = "SYNCH"
+Data$Synch[Data$Conditions == "ASYNCH1PP"] = "ASYNCH";Data$Synch[Data$Conditions == "ASYNCH3PP"] = "ASYNCH"
+Data$Perspective[Data$Conditions == "SYNCH1PP"] = "1PP"
+Data$Perspective[Data$Conditions == "ASYNCH1PP"] = "1PP";Data$Perspective[Data$Conditions == "ASYNCH3PP"] = "3PP"
+
+# Data$truesync    <- ifelse(Data$synchrony == '1PPSync','sync','async')
+# Data$perspect    <- ifelse(Data$synchrony == '3PPAsync','3PP','1PP')
+#here if we want to remove catch trials
+#Data      <- Data[Data$Trials != 0,]
+
+df = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection) ~  ID+Conditions+Environment+factor(Synch)+factor(Perspective)+N_True+N_False,Data,mean)
+
+#for the reaction time
+dfrt = aggregate(cbind(MeanQ1,MeanQ2) ~  ID+Conditions+Environment,Data,mean)
+
+#again let's just convert into factor and organize the level in the correct order
+dfrt$Conditions <-factor(dfrt$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$Conditions <-factor(df$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$`factor(Synch)` <-factor(df$`factor(Synch)`, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df$`factor(Perspective)` <-factor(df$`factor(Perspective)`, 
+                          levels = c("1PP","3PP"))
+
+df2 = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection,Environment)~ID+Conditions+factor(Synch)+factor(Perspective)+N_True+N_False,Data,mean)
+                df2$Conditions <-factor(df2$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df2$`factor(Synch)` <-factor(df2$`factor(Synch)`, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df2$`factor(Perspective)` <-factor(df2$`factor(Perspective)`, 
+                          levels = c("1PP","3PP"
+))
+Data$Stim[Data$PerformanceHitCR == "cr"] = "NoChange";Data$Stim[Data$PerformanceHitCR == "fa"] = "NoChange";Data$Stim[Data$PerformanceHitCR == "hit"] = "Change";Data$Stim[Data$PerformanceHitCR == "miss"] = "Change"
+df3 = aggregate(cbind(Performance,Ownership,Agency,Control1,Control2)~ID+Conditions+factor(Synch)+factor(Perspective)+factor(Stim),Data,mean)
+df3$Conditions <-factor(df3$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df4 = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection)~ID,Data,mean)
+# Let's plot!
+
+#jpeg(file="Performance_Hit_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_hit <- ggplot(df,aes(x=Conditions, y = Hit/N_False, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('hits')+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+#dev.off()
+#jpeg(file="Performance_Miss_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggplot(df,aes(x=Conditions, y = Miss/20, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('misses')+scale_fill_manual(name="Miss",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# jpeg(file="Performance_CR_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+e_cr <- ggplot(df,aes(x=Conditions, y = CorrectRejection/N_True, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('cr')+scale_fill_manual(name="CR",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# jpeg(file="Performance_FA_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggplot(df,aes(x=Conditions, y = FalseAlarm/20, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('fa')+scale_fill_manual(name="FA",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# jpeg(file="Performance_TotPerf_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_crH <- ggplot(df,aes(x=Conditions, y = ((Hit+ CorrectRejection)/Ntrials), fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# 
+# jpeg(file="Performance_SYNCH_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_synch <- ggplot(df,aes(x=df$`factor(Synch)`, y = ((Hit+ CorrectRejection)/Ntrials), fill =df$`factor(Synch)`))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# 
+# jpeg(file="Performance_Perspective_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_Pers<-ggplot(df,aes(x=`factor(Perspective)`, y = ((Hit+ CorrectRejection)/Ntrials), fill = `factor(Perspective)`))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# 
+# jpeg(file="CR_SYNCH_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_CRsynch <- ggplot(df,aes(x=df$`factor(Synch)`, y = (CorrectRejection/N_True), fill =df$`factor(Synch)`))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="CR",values =c("red2","grey60"))
+# dev.off()
+# 
+# jpeg(file="Hit_Perspective_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_HitPers<-ggplot(df,aes(x=`factor(Perspective)`, y = (Hit/N_False), fill = `factor(Perspective)`))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="Hit_SYNCH_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_Hitsynch <- ggplot(df,aes(x=df$`factor(Synch)`, y = (Hit/N_False), fill =df$`factor(Synch)`))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# 
+# jpeg(file="CR_Perspective_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_CRPers<-ggplot(df,aes(x=`factor(Perspective)`, y = (CorrectRejection/N_True), fill = `factor(Perspective)`))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="CR",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="Performance_EnvAndCond_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df2,aes(x=factor(Environment), y = ((Hit+ CorrectRejection)/Ntrials), fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+    geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# 
+# jpeg(file="Performance_EnvAndCond_Hit_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df2,aes(x=factor(Environment), y = (Hit/N_False), fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+    geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# 
+# jpeg(file="Performance_EnvAndCond_CR_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df2,aes(x=factor(Environment), y = (CorrectRejection/N_True), fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+    geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# 
+jpeg(file="RTQ1_MOCK_trials_N19.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggplot(dfrt,aes(x=Conditions, y = MeanQ1, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('q1')+scale_fill_manual(name="CR",values =c("red2","lightsalmon2","grey60"))
+ dev.off()
+summary(aov(MeanQ1~Conditions +Error(ID/Conditions), data = dfrt))
+jpeg(file="RTQ2_MOCK_trials_N19.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggplot(dfrt,aes(x=Conditions, y = MeanQ2, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('q2')+scale_fill_manual(name="CR",values =c("red2","lightsalmon2","grey60"))
+dev.off()
+summary(aov(MeanQ2~Conditions +Error(ID/Conditions), data = dfrt))
+
+
+
+
+# jpeg(file="Performance_TotPerf_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_crH_d <- ggplot(df, aes(x = ((Hit+ CorrectRejection)/Ntrials), fill = factor(Conditions)))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# jpeg(file="Performance_TotPerfSynch_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_synch_d <- ggplot(df, aes(x = ((Hit+ CorrectRejection)/Ntrials), fill = `factor(Synch)`))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="Performance_TotPerfPersp_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_Persp_d <- ggplot(df, aes(x = ((Hit+ CorrectRejection)/Ntrials), fill = `factor(Perspective)`))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="CR_TotPerfSynch_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_CRsynch_d <- ggplot(df, aes(x = (CorrectRejection/N_True), fill = `factor(Synch)`))+   geom_density(alpha=0.6)+scale_fill_manual(name="CR",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="CR_TotPerfPersp_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_CRPersp_d <- ggplot(df, aes(x = ( CorrectRejection/N_True), fill = `factor(Perspective)`))+   geom_density(alpha=0.6)+scale_fill_manual(name="CR",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="Hit_TotPerfSynch_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_Hitsynch_d <- ggplot(df, aes(x = (Hit/N_False), fill = `factor(Synch)`))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="Hit_TotPerfPersp_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_HitPersp_d <- ggplot(df, aes(x = ( Hit/N_False), fill = `factor(Perspective)`))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","grey60"))
+# dev.off()
+# jpeg(file="Performance_CR_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_cr_d <-ggplot(df, aes(x = ((CorrectRejection/N_True)), fill = factor(Conditions)))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# jpeg(file="Performance_Hit_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_hit_d<- ggplot(df, aes(x = ((Hit/N_False)), fill = factor(Conditions)))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# jpeg(file="Performance_Perftot_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+e_HCR_d<- ggplot(df, aes(x = ((Hit+CorrectRejection)/Ntrials), fill = factor(Conditions)))+   geom_density(alpha=0.6)+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+
+jpeg(file="Performance_CR_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+figure <- ggarrange(e_cr, e_cr_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="Performance_Perf_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_crH, e_crH_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="Performance_Hit_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_hit, e_hit_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="Performance_synch_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_synch, e_synch_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="Performance_persp_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_Pers, e_Persp_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="CR_synch_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_CRsynch, e_CRsynch_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="CR_persp_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_CRPers, e_CRPersp_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="Hit_synch_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_Hitsynch, e_Hitsynch_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="Hit_persp_DENSITYBP_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(e_HitPers, e_HitPersp_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+
+#lineal model, to be checked because I have a problem with R and I need to use Nelder_Mead instead of bobyqa, didnt understand why yet (already uninstall/reinstall R so many times)
+
+# summary(mod1  <- glmer(factor(Performance)~1 + (ID|Environment), data=df,family = binomial,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod2  <- glmer(factor(Performance)~Conditions + (ID|Environment), data=Data,family = binomial,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod3  <- glmer(factor(Performance)~Conditions+ Environment + (ID|Environment), data=Data,family = binomial,control = glmerControl(optimizer = "Nelder_Mead")))
+# anova(mod1,mod2,mod3)
+# summary(anova(mod1,mod2,mod3))
+# 
+# summary(mod1.1  <- glmer(Hit~1 + (ID|Environment), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod2.1  <- glmer(Hit~Conditions + (ID|Environment), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod3.1  <- glmer(Hit~Conditions+ Environment + (ID|Environment), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod4.1  <- glmer(Hit~Conditions+ Environment +Conditions*Environment +(ID|Environment), data=Data,family =poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# anova(mod1.1,mod2.1,mod3.1,mod4.1)
+# lsmeans(mod4.1, pairwise~Conditions*Environment, adjust="Tukey")
+# lsmeans(mod4.1, pairwise~Conditions, adjust="Tukey")
+# lsmeans(mod4.1, pairwise~Environment, adjust="Tukey")
+# 
+# 
+# summary(mod1.2  <- glmer(CorrectRejection~1 + (1|ID), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod2.2  <- glmer(CorrectRejection~Conditions + (1|ID), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod3.2  <- glmer(CorrectRejection~Conditions+ Environment + (1|ID), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod4.2  <- glmer(CorrectRejection~Conditions+ Environment + Conditions*Environment+ (1|ID), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# anova(mod1.2,mod2.2,mod3.2,mod4.2)
+# 
+# lsmeans(mod4.2, pairwise~Conditions*Environment, adjust="Tukey")
+# lsmeans(mod4.2, pairwise~Conditions, adjust="Tukey")
+# lsmeans(mod4.2, pairwise~Environment, adjust="Tukey")
+# 
+# 
+# summary(mod1.3  <- glmer((CorrectRejection+Hit)~1 + (1|ID)+ (1|Environment), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod2.3  <- glmer((CorrectRejection+Hit)~Conditions + (1|ID)+ (1|Environment), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod3.3  <- glmer((CorrectRejection+Hit)~Conditions+  (1|ID)+ (1|Environment), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# summary(mod4.3  <- glmer((CorrectRejection+Hit)~Conditions+  Conditions*Environment+ (1|ID)+ (1|Environment), data=Data,family = poisson,control = glmerControl(optimizer = "Nelder_Mead")))
+# anova(mod1.3,mod2,3,mod3.3,mod4.3)
+# lsmeans(mod4.3, pairwise~Conditions*Environment, adjust="bonferroni")
+# lsmeans(mod4.3, pairwise~Conditions, adjust="Tukey")
+# lsmeans(mod4.3, pairwise~Environment, adjust="Tukey")
+# 
+# #pairwise posthoc
+# 
+# 
+
+
+#for dprime, to avoid having inifite value, we add /remove 0.01 to performance with null score / full score
+
+Data$Hit[Data$ID == 'Mock_Y18' & Data$Conditions == 'ASYNCH3PP' ] = Data$Hit[Data$ID == 'Mock_Y18' & Data$Conditions == 'ASYNCH3PP' ] + 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y18' & Data$Conditions == 'ASYNCH3PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y18' & Data$Conditions == 'ASYNCH3PP' ] - 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y28' & Data$Conditions == 'ASYNCH3PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y28' & Data$Conditions == 'ASYNCH3PP' ] + 0.01
+Data$Hit[Data$ID == 'Mock_Y28' & Data$Conditions == 'ASYNCH3PP' ] = Data$Hit[Data$ID == 'Mock_Y28' & Data$Conditions == 'ASYNCH3PP' ] - 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y28' & Data$Conditions == 'SYNCH1PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y28' & Data$Conditions == 'SYNCH1PP' ] + 0.01
+Data$Hit[Data$ID == 'Mock_Y28' & Data$Conditions == 'SYNCH1PP' ] = Data$Hit[Data$ID == 'Mock_Y28' & Data$Conditions == 'SYNCH1PP' ] - 0.01
+Data$Hit[Data$ID == 'Mock_Y09' & Data$Conditions == 'ASYNCH1PP' ] = Data$Hit[Data$ID == 'Mock_Y09' & Data$Conditions == 'ASYNCH1PP' ] - 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y09' & Data$Conditions == 'ASYNCH1PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y09' & Data$Conditions == 'ASYNCH1PP' ] + 0.01
+Data$Hit[Data$ID == 'Mock_Y03' & Data$Conditions == 'SYNCH1PP' ] = Data$Hit[Data$ID == 'Mock_Y03' & Data$Conditions == 'SYNCH1PP' ] - 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y03' & Data$Conditions == 'SYNCH1PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y03' & Data$Conditions == 'SYNCH1PP' ] + 0.01
+Data$Hit[Data$ID == 'Mock_Y15' & Data$Conditions == 'ASYNCH3PP' ] = Data$Hit[Data$ID == 'Mock_Y15' & Data$Conditions == 'ASYNCH3PP' ] - 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y15' & Data$Conditions == 'ASYNCH3PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y15' & Data$Conditions == 'ASYNCH3PP' ] + 0.01
+Data$Hit[Data$ID == 'Mock_Y08' & Data$Conditions == 'ASYNCH3PP' ] = Data$Hit[Data$ID == 'Mock_Y08' & Data$Conditions == 'ASYNCH3PP' ] - 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y08' & Data$Conditions == 'ASYNCH3PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y08' & Data$Conditions == 'ASYNCH3PP' ] + 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y02' & Data$Conditions == 'ASYNCH1PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y02' & Data$Conditions == 'ASYNCH1PP' ] + 0.01
+Data$FalseAlarm[Data$ID == 'Mock_Y06' & Data$Conditions == 'ASYNCH3PP' ] = Data$FalseAlarm[Data$ID == 'Mock_Y06' & Data$Conditions == 'ASYNCH3PP' ] + 0.01
+Data$Hit[Data$ID == 'Mock_Y06' & Data$Conditions == 'ASYNCH3PP' ] = Data$Hit[Data$ID == 'Mock_Y06' & Data$Conditions == 'ASYNCH3PP' ] - 0.01
+df = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection) ~  ID+Conditions+Environment+factor(Synch)+factor(Perspective)+N_True+N_False,Data,mean)
+
+df$Conditions <-factor(df$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$`factor(Synch)` <-factor(df$`factor(Synch)`, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df$`factor(Perspective)` <-factor(df$`factor(Perspective)`, 
+                          levels = c("1PP","3PP"))
+
+df$Dprime = ((qnorm(df$Hit/df$N_False))-(qnorm(df$FalseAlarm/df$N_True)))
+df$Cprime = -((qnorm(df$Hit/df$N_False))+(qnorm(df$FalseAlarm/df$N_True)))/2
+
+
+jpeg(file="Performance_DPRIME_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df,aes(x=Conditions, y = Dprime, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Dprime')+scale_fill_manual(name="Dprime",values =c("red2","lightsalmon2","grey60"))
+ dev.off()
+
+ jpeg(file="Performance_DPRIME_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df, aes(x =  Dprime, fill = factor(Conditions)))+   geom_density(alpha=0.6)+scale_fill_manual(name="Cprime",values =c("red2","lightsalmon2","grey60"))
+            
+ dev.off()
+
+
+ jpeg(file="Performance_CPRIME_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df,aes(x=Conditions, y =  Cprime, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Cprime')+scale_fill_manual(name="Cprime",values =c("red2","lightsalmon2","grey60"))
+ dev.off()
+
+jpeg(file="Performance_CPRIME_DENSITY_MOCKN24_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df, aes(x = Cprime, fill = factor(Conditions)))+   geom_density(alpha=0.6)+scale_fill_manual(name="Cprime",values =c("red2","lightsalmon2","grey60"))
+            
+ dev.off()
+ 
+ df$Performance = (df$Hit + df$CorrectRejection)/40
+ t.test(df$Performance[df$Conditions == "SYNCH1PP"],df$Performance[df$Conditions == "ASYNCH3PP"],paired = TRUE)
+ 
+ df5 = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection,Agency,Ownership,Control1,Control2,Threat)~ID+Conditions,Data,mean)
+ df5$perftot = (df5$Hit+df5$CorrectRejection)/2
+df5$NewBSC = (df5$Agency+df5$Ownership)/2-(df5$Control1+df5$Control2)/2
+ 
+ #correlation
+ library("ggpubr")
+jpeg(file="AGENCY_Perf.jpeg")
+ggscatter(df5, x = "perftot", y = "NewBSC",color = "Conditions", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+jpeg(file="Ownership_Perf.jpeg")
+ggscatter(df5, x = "perftot", y = "Ownership",color = "Conditions", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+df2$Dprime = ((qnorm(df2$Hit/df2$N_False))-(qnorm(df2$FalseAlarm/df2$N_False)))
+
+Mydataframe  = data.frame(
+  SMA1 = df5$perftot[df5$Conditions == "SYNCH1PP"]-df5$perftot[df5$Conditions == "ASYNCH1PP"],
+  SMA3 = df5$perftot[df5$Conditions == "SYNCH1PP"]-df5$perftot[df5$Conditions == "ASYNCH3PP"],
+  SMA1DP = df2$Dprime[df2$Conditions == "SYNCH1PP"]-df2$Dprime[df2$Conditions == "ASYNCH1PP"],
+  SMA3DP = df2$Dprime[df2$Conditions == "SYNCH1PP"]-df2$Dprime[df2$Conditions == "ASYNCH3PP"],
+  A_SMA1 = df5$Agency[df5$Conditions == "SYNCH1PP"]-df5$Agency[df5$Conditions == "ASYNCH1PP"],
+  A_SMA3 = df5$Agency[df5$Conditions == "SYNCH1PP"]-df5$Agency[df5$Conditions == "ASYNCH3PP"],
+  O_SMA1 = df5$Ownership[df5$Conditions == "SYNCH1PP"]-df5$Ownership[df5$Conditions == "ASYNCH1PP"],
+  O_SMA3 = df5$Ownership[df5$Conditions == "SYNCH1PP"]-df5$Ownership[df5$Conditions == "ASYNCH3PP"],
+  NEWBSC_SMA1 = df5$NewBSC[df5$Conditions == "SYNCH1PP"]-df5$NewBSC[df5$Conditions == "ASYNCH1PP"],
+  NEWBSC_SMA2 = df5$NewBSC[df5$Conditions == "SYNCH1PP"]-df5$NewBSC[df5$Conditions == "ASYNCH3PP"]
+) 
+jpeg(file="Agency_Perf_deltaSynchasynch1pp.jpeg")
+ggscatter(Mydataframe, x = "A_SMA1", y = "SMA1", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+jpeg(file="Ownership_Perf_deltaSynchasynch3pp.jpeg")
+ggscatter(Mydataframe, x = "O_SMA1", y = "SMA1", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+jpeg(file="Agency_Perf_deltaSynchasynch3pp.jpeg")
+ggscatter(Mydataframe, x = "A_SMA3", y = "SMA3", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+jpeg(file="Ownership_Perf_deltaSynchasynch3pp.jpeg")
+ggscatter(Mydataframe, x = "O_SMA3", y = "SMA3", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+jpeg(file="Agency_Perf_deltaSynchasynch3pp.jpeg")
+ggscatter(Mydataframe, x = "A_SMA3", y = "SMA3DP", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+jpeg(file="Ownership_Perf_deltaSynchasynch3pp.jpeg")
+ggscatter(Mydataframe, x = "O_SMA3", y = "SMA3DP", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+jpeg(file="Agency_Perf_deltaSynchasynch1pp.jpeg")
+ggscatter(Mydataframe, x = "A_SMA1", y = "SMA1DP", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+jpeg(file="Ownership_Perf_deltaSynchasynch1pp.jpeg")
+ggscatter(Mydataframe, x = "O_SMA1", y = "SMA1DP", add = "reg.line", conf.int = TRUE, cor.coef = TRUE, cor.method = "pearson",xlab = "Delta BSC", ylab = "Delta Perf",main = "Correlation  agency and performance")
+dev.off()
+
+
+# multiplot(p1,p2,p3,p4, cols = 2)
+```
+Let's check the timing of the conditions
+
+```{r}
+Data <- read_xlsx(("Analysis_Mock_YoungHealthy_020221_FullSample_AlTiming.xlsx"),sheet = 2, range = "A2:V3511", col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+colnames(Data) <- c("ID","Hit","Miss","FalseAlarm","CorrectRejection","N_True","N_False","Environment","Conditions","Answer","Performance","PerformanceHitCR","Trials","Ownership","Agency","Control1","Control2","Threat","MeanQ1","MeanQ2","Timing","Synch","Perspective")
+Ntrials = 15 # here you put the number of total trials: 40 if you dont count catch trials, 45 otherwise
+
+#remove outliers:
+#Data      <- Data[Data$ID != 'Mock_Y20',] # super low score of performance less than 50% in 2 conditions
+Data      <- Data[Data$ID != 'Mock_Y30',] # super low score of performance less than 50% in 2 conditions
+Data      <- Data[Data$ID != 'Mock_Y18',] # Technical bug of tracking during BSC
+Data      <- Data[Data$ID != 'Mock_Y14',] #technical bug: mismatch between skin color (dark) and avatar skin color
+Data      <- Data[Data$ID != 'Mock_Y06',] #Answered always that the environment changed  
+#Let's convert these parameters into factor
+Data$Conditions   <- factor(Data$Conditions)
+Data$Conditions <-factor(Data$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+Data$Environment   <- factor(Data$Environment)
+Data$PerformanceHitCR <- factor(Data$PerformanceHitCR)
+
+#Let's divide the conditions into synch vs asynch and 1PP vs 3pp
+Data$Synch[Data$Conditions == "SYNCH1PP"] = "SYNCH"
+Data$Synch[Data$Conditions == "ASYNCH1PP"] = "ASYNCH";Data$Synch[Data$Conditions == "ASYNCH3PP"] = "ASYNCH"
+Data$Perspective[Data$Conditions == "SYNCH1PP"] = "1PP"
+Data$Perspective[Data$Conditions == "ASYNCH1PP"] = "1PP";Data$Perspective[Data$Conditions == "ASYNCH3PP"] = "3PP"
+
+# Data$truesync    <- ifelse(Data$synchrony == '1PPSync','sync','async')
+# Data$perspect    <- ifelse(Data$synchrony == '3PPAsync','3PP','1PP')
+#here if we want to remove catch trials
+#Data      <- Data[Data$Trials != 0,]
+
+df = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection) ~  ID+Conditions+Environment+factor(Synch)+factor(Perspective)+N_True+N_False+Timing,Data,mean)
+
+#for the reaction time
+dfrt = aggregate(cbind(MeanQ1,MeanQ2) ~  ID+Conditions+Environment,Data,mean)
+
+#again let's just convert into factor and organize the level in the correct order
+dfrt$Conditions <-factor(dfrt$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$Conditions <-factor(df$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$`factor(Synch)` <-factor(df$`factor(Synch)`, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df$`factor(Perspective)` <-factor(df$`factor(Perspective)`, 
+                          levels = c("1PP","3PP"))
+df$Timing <-factor(df$Timing, 
+                          levels = c("FIRST","MID","LAST"))
+
+df2 = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection,Environment)~ID+Conditions+factor(Synch)+factor(Perspective)+N_True+N_False,Data,mean)
+                df2$Conditions <-factor(df2$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df2$`factor(Synch)` <-factor(df2$`factor(Synch)`, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df2$`factor(Perspective)` <-factor(df2$`factor(Perspective)`, 
+                          levels = c("1PP","3PP"
+))
+df3 = aggregate(cbind(Performance,PerformanceHitCR) ~ID+Conditions+factor(Synch)+factor(Perspective),Data,mean)
+df4 = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection)~ID,Data,mean)
+# Let's plot!
+
+ggplot(df,aes(x=Timing, y = ((Hit+ CorrectRejection)/Ntrials), fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Perf')+scale_fill_manual(name="Hit",values =c("red2","lightsalmon2","grey60"))
+
+```
+
+
+
+## Including Plots
+
+Now we test BSC 
+
+
+```{r pressure, echo=FALSE}
+df = aggregate(cbind(Ownership,Agency,Control1,Control2,Threat) ~  ID+Conditions+Synch+Perspective+Round_BSC,Data,mean)
+df = df[df$Round_BSC == 2,]
+df$NewBSC = (df$Agency+df$Ownership)/2-(df$Control1+df$Control2)/2
+
+#STATS
+#NEWBSC
+summary(aov(NewBSC~Conditions+Error(ID/Conditions),data = df)) #p = 0.0259
+z = aov(NewBSC~Conditions+Error(ID/Conditions),data = df)
+# emm = emmeans(z,~Conditions)
+# pairs(emm)
+t.test(df$NewBSC[df$Conditions == "SYNCH1PP"],df$NewBSC[df$Conditions == "ASYNCH1PP"],paired = TRUE) # p = 0.021
+t.test(df$NewBSC[df$Conditions == "SYNCH1PP"],df$NewBSC[df$Conditions == "ASYNCH3PP"],paired = TRUE) #p = 0.023
+#Ownership
+summary(aov(Ownership~Conditions+Error(ID/Conditions),data = df)) #p = 0.0354
+z = aov(Ownership~Conditions+Error(ID/Conditions),data = df)
+# emm = emmeans(z,~Conditions)
+# pairs(emm)
+t.test(df$Ownership[df$Conditions == "SYNCH1PP"],df$Ownership[df$Conditions == "ASYNCH1PP"],paired = TRUE) # p = 0.8
+t.test(df$Ownership[df$Conditions == "SYNCH1PP"],df$Ownership[df$Conditions == "ASYNCH3PP"],paired = TRUE) #p = 0.04
+
+#Agency
+summary(aov(Agency~Conditions+Error(ID/Conditions),data = df)) #p = 0.00214
+z = aov(Agency~Conditions+Error(ID/Conditions),data = df)
+# emm = emmeans(z,~Conditions)
+# pairs(emm)
+t.test(df$Agency[df$Conditions == "SYNCH1PP"],df$Agency[df$Conditions == "ASYNCH1PP"],paired = TRUE) # p = 0.00049
+t.test(df$Agency[df$Conditions == "SYNCH1PP"],df$Agency[df$Conditions == "ASYNCH3PP"],paired = TRUE) #p = 0.18
+jpeg(file="BSC_MOCK_BSC_ROUND2__MOCK_N38.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df,aes(x=Conditions, y = NewBSC, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+    geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('BSC')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))+ylim(c(-0.2,1))
+dev.off()
+df$Conditions <-factor(df$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$Synch <-factor(df$Synch, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df$Perspective <-factor(df$Perspective, 
+                          levels = c("1PP","3PP"
+))
+mu_O <- ddply(df, "Conditions", summarise, grp.mean=mean(Ownership))
+mu_A <- ddply(df, "Conditions", summarise, grp.mean=mean(Agency))
+
+
+# jpeg(file="BSC_OWNERSHIP__MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+bo<-ggplot(df,aes(x=Conditions, y = Ownership, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Ownership')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+# 
+# jpeg(file="BSC_AGENCY_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ba<-ggplot(df,aes(x=Conditions, y = Agency, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Agency')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+# 
+# 
+# 
+# jpeg(file="BSC_OWNERSHIP_SYNCHMERGED_MRI_MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+bo_synch<-ggplot(df,aes(x=Synch, y = Ownership, fill = Synch))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Ownership')+scale_fill_manual(name="BSC",values =c("red2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+# 
+# jpeg(file="BSC_AGENCY_SYNCHMERGED_MRI_MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ba_synch<-ggplot(df,aes(x=Synch, y = Agency, fill = Synch))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Agency')+scale_fill_manual(name="BSC",values =c("red2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+# 
+# 
+# jpeg(file="BSC_OWNERSHIP_PerspMERGED_MRI_MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+bo_Persp<-ggplot(df,aes(x=Perspective, y = Ownership, fill = Perspective))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Ownership')+scale_fill_manual(name="BSC",values =c("red2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+# 
+# jpeg(file="BSC_AGENCY_PerspMERGED_MRI_MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ba_Persp<-ggplot(df,aes(x=Perspective, y = Agency, fill = Perspective))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Agency')+scale_fill_manual(name="BSC",values =c("red2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+# 
+# jpeg(file="BSC_Threat_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df,aes(x=Conditions, y = Threat, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Threat')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+
+MeanControl =c((Data$Control1+Data$Control2)/2)
+# jpeg(file="BSC_CONTROL_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df,aes(x=Conditions, y = Control1, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Control')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+# jpeg(file="BSC_CONTROL2_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df,aes(x=Conditions, y = Control2, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Control')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))+ylim(c(0,1.2))
+# dev.off()
+jpeg(file="BSC_CONTROLmean_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df,aes(x=Conditions, y = ((Control1+Control2)/2), fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Control')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))+ylim(c(0,1.2))
+dev.off()
+# jpeg(file="BSC_OWNERSHIP_DENSITY_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+bo_d<-ggplot(df, aes(x = Ownership, fill = factor(Conditions)))+   geom_density(alpha=0.4)+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))#+geom_vline(data=mu_O, aes(xintercept=grp.mean, color="black"))+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))
+# dev.off()
+# jpeg(file="BSC_AGENCY_DENSITY_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ba_d<-ggplot(df, aes(x = Agency, fill = factor(Conditions)))+   geom_density(alpha=0.4)+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))#+geom_vline(data=mu_A, aes(xintercept=grp.mean, color=Conditions))
+# dev.off()
+# 
+# jpeg(file="BSC_AGENCY_DENSITY_Persp_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ba_Persp_d<-ggplot(df, aes(x = Agency, fill = Perspective))+   geom_density(alpha=0.4)+scale_fill_manual(name="BSC",values =c("red2","grey60"))#+geom_vline(data=mu_A, aes(xintercept=grp.mean, color=Conditions))
+# dev.off()
+# jpeg(file="BSC_AGENCY_DENSITY_Synch_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ba_synch_d<-ggplot(df, aes(x = Agency, fill = Synch))+   geom_density(alpha=0.4)+scale_fill_manual(name="BSC",values =c("red2","grey60"))#+geom_vline(data=mu_A, aes(xintercept=grp.mean, color=Conditions))
+# dev.off()
+# 
+# jpeg(file="BSC_Ownership_DENSITY_Persp_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+bo_Persp_d<-ggplot(df, aes(x = Ownership, fill = Perspective))+   geom_density(alpha=0.4)+scale_fill_manual(name="BSC",values =c("red2","grey60"))#+geom_vline(data=mu_A, aes(xintercept=grp.mean, color=Conditions))
+# dev.off()
+# jpeg(file="BSC_Ownership_DENSITY_Synch_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+bo_synch_d<-ggplot(df, aes(x = Ownership, fill = Synch))+   geom_density(alpha=0.4)+scale_fill_manual(name="BSC",values =c("red2","grey60"))#+geom_vline(data=mu_A, aes(xintercept=grp.mean, color=Conditions))
+# dev.off()
+
+jpeg(file="BSC_O_DENSITYBP_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(bo, bo_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+
+jpeg(file="BSC_A_DENSITYBP_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(ba, ba_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+
+jpeg(file="BSC_O_synch_DENSITYBP_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(bo_synch, bo_synch_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="BSC_A_synch_DENSITYBP_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(ba_synch, ba_synch_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="BSC_O_Persp_DENSITYBP_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(bo_Persp, bo_Persp_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+jpeg(file="BSC_A_synch_DENSITYBP_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+figure <- ggarrange(ba_Persp, ba_Persp_d, 
+                    
+                    ncol = 2, nrow = 1)
+dev.off()
+
+
+h =aov(NewBSC~Conditions + Error(ID/Conditions), data = df)
+emm = emmeans(h,~Conditions)
+pairs(emm)
+# 
+# hh =aov(Ownership~Conditions + Error(ID/Conditions), data = Data)
+# emm_o = emmeans(hh,~Conditions)
+# pairs(emm_o)
+# 
+# hhh =aov(Threat~Conditions + Error(ID/Conditions), data = Data)
+# emm_oo = emmeans(hhh,~Conditions)
+# pairs(emm_oo)
+# hhhh =aov(((Control1+Control2)/2)~Conditions + Error(ID/Conditions), data = Data)
+# emm_ooo = emmeans(hhhh,~Conditions)
+# pairs(emm_ooo)
+# multiplot(p1,p2,p3,p4, cols = 2)
+```
+And now we use  a file in which we have the % error for each participant for each object. We represent them spatialy and check that we dont have huge error difference between perspective/synchrony conditions. We also want to check if there is an attention effect: if so, the object in the left side, the side where the hand does not move, should be more difficult than the other. then if this is the case we need to make sure there is not a specific effect of attention between conditions
+```{r}
+NumberParticipants = 24;
+MyDifficulty <- read_xlsx(("Analysis_Mock_YoungHealthy_020221_FullSample_Sheet.xlsx"),sheet = 9, range = "A2:Y27", col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+colnames(MyDifficulty) <- c("ID","F1_Env1","F2_Env1","F3_Env1","F4_Env1","F5_Env1","F6_Env1","F7_Env1","F8_Env1","F1_Env2","F2_Env2","F3_Env2","F4_Env2","F5_Env2","F6_Env2","F7_Env2","F8_Env2","F1_Env4","F2_Env4","F3_Env4","F4_Env4","F5_Env4","F6_Env4","F7_Env4","F8_Env4")
+
+MyDifficulty      <- MyDifficulty[MyDifficulty$ID != 'Mock_Y20',]
+MyDifficulty      <- MyDifficulty[MyDifficulty$ID != 'Mock_Y30',]
+MyBoxPlot_Difficulty_Env1 <- data.frame(
+Coordinatex = c(rep(c(2.5,1.5,3,-0.5,2.5,0,3,2),each = 1)),
+Coordinatey= c(rep(c(1.5,1.75,0.75,2.3,1,1.5,1.5,1),each = 1)),
+SizeDot = c(mean(MyDifficulty$F1_Env1),mean(MyDifficulty$F2_Env1),mean(MyDifficulty$F3_Env1),mean(MyDifficulty$F4_Env1),mean(MyDifficulty$F5_Env1),mean(MyDifficulty$F6_Env1),mean(MyDifficulty$F7_Env1),mean(MyDifficulty$F8_Env1)))
+
+jpeg(file="Env1 Spatial representation of objects error.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+ggplot(MyBoxPlot_Difficulty_Env1, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot))+ggtitle("Env1 Spatial representation of objects error")
+dev.off()
+
+
+MyBoxPlot_Difficulty_Env2 <- data.frame(
+
+Coordinatex = c(rep(c(.3,2,0,-1,2.5,-1.5,1,1.5),each = 1)),
+Coordinatey= c(rep(c(3,0.75,2,1,3,1.5,2,1.5),each = 1)),
+SizeDot = c(mean(MyDifficulty$F1_Env2),mean(MyDifficulty$F2_Env2),mean(MyDifficulty$F3_Env2),mean(MyDifficulty$F4_Env2),mean(MyDifficulty$F5_Env2),mean(MyDifficulty$F6_Env2),mean(MyDifficulty$F7_Env2),mean(MyDifficulty$F8_Env2)))
+
+jpeg(file="Env2 Spatial representation of objects error.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+ggplot(MyBoxPlot_Difficulty_Env2, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot))+ggtitle("Env2 Spatial representation of objects error")
+dev.off()
+
+
+MyBoxPlot_Difficulty_Env4 <- data.frame(
+
+Coordinatex = c(rep(c(-2,-2,0.5,2,-2.25,-0.75,-2.5,2.75),each =1)),
+Coordinatey= c(rep(c(1.5,1,2.5,2,1.5,2.5,1,1),each = 1)),
+SizeDot = c(mean(MyDifficulty$F1_Env4),mean(MyDifficulty$F2_Env4),mean(MyDifficulty$F3_Env4),mean(MyDifficulty$F4_Env4),mean(MyDifficulty$F5_Env4),mean(MyDifficulty$F6_Env4),mean(MyDifficulty$F7_Env4),mean(MyDifficulty$F8_Env4)))
+
+jpeg(file="Env4 Spatial representation of objects error.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+ggplot(MyBoxPlot_Difficulty_Env4, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot))+ggtitle("Env4 Spatial representation of objects error")
+dev.off()
+
+
+#Let's do the same for the perspective: we divide participants according to the condition in which they were in the specific environment : group 1 was in 1PP in the environment, group 2 in 3PP (so once the full sample will be acquired we will have 2/3 in 1PP and 1/3 in 3pp for each environment)
+
+
+
+
+# Env1 = 3A:	
+#find which participant had the 3A in Env1
+Participants_3A = unique(Data$ID[Data$Environment == "ENV1" & Data$Conditions == "ASYNCH3PP"]);
+Index3A = which(MyDifficulty$ID %in% Participants_3A);
+CoordinateX_Env1 = c(2,5,6,8,15,16,17)
+CoordinateY_Env1 = c(1.5,1.75,0.75,2.3,1,1.5,1.5,1)
+# for (i in CoordinateY_Env1) {
+#   CoordinateYENV1_1PP = []
+#   CoordinateYENV1_1PP[i,] = seq(CoordinateY_Env1[i],CoordinateY_Env1[i]+length(MyDifficulty$F1_Env1[-c(2,5,6,8,15,16,17)])*0.1,0.1)
+#     CoordinateYENV1_3PP[i,] = seq(CoordinateY_Env1[i],CoordinateY_Env1[i]+length(MyDifficulty$F1_Env1[Index3A])*0.1,0.1)
+# 
+# }
+
+# Env2 = 3A:	Y15,13,09,12,03    which corresponds to index (3,7,10,11,12)
+CoordinateX_Env2 = c(3,7,10,11,12)
+CoordinateY_Env2 = c(3,0.75,2,1,3,1.5,2,1.5)
+# Env4 = 3A:	Y11,01,19,28,18,04    which corresponds to index (1,4,9,13,14,18)
+CoordinateX_Env4 = c(1,4,9,13,14,18)
+CoordinateY_Env4 = c(1.5,1,2.5,2,1.5,2.5,1,1)  
+
+# MyDifficulty <- read_xlsx(("Analysis_MOCK_YoungHealthy_271120.xlsx"),sheet = 10, range = "B2:Y19", col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+# colnames(MyDifficulty) <- c("F1_Env1","F2_Env1","F3_Env1","F4_Env1","F5_Env1","F6_Env1","F7_Env1","F8_Env1","F1_Env2","F2_Env2","F3_Env2","F4_Env2","F5_Env2","F6_Env2","F7_Env2","F8_Env2","F1_Env4","F2_Env4","F3_Env4","F4_Env4","F5_Env4","F6_Env4","F7_Env4","F8_Env4")
+MyBoxPlot_Difficulty_Env1 <- data.frame(
+
+Coordinatex = c(rep(c(2.5,2.1,1.5,1.6,3,3.1,-0.5,-0.4,2.5,2.6,0,0.1,3,3.1,2,2.1),each = 1)),
+Coordinatey=  c(rep(c(1.5,1.75,0.75,2.3,1,1.5,1.5,1),each = 2)),
+SizeDot = c(mean(MyDifficulty$F1_Env1[-Index3A]),mean(MyDifficulty$F1_Env1[Index3A]),mean(MyDifficulty$F2_Env1[-Index3A]),mean(MyDifficulty$F2_Env1[Index3A]),mean(MyDifficulty$F3_Env1[-Index3A]),mean(MyDifficulty$F3_Env1[Index3A]),mean(MyDifficulty$F4_Env1[-Index3A]),mean(MyDifficulty$F4_Env1[Index3A]),mean(MyDifficulty$F5_Env1[-Index3A]),mean(MyDifficulty$F5_Env1[Index3A]),mean(MyDifficulty$F6_Env1[-Index3A]),mean(MyDifficulty$F6_Env1[Index3A]),mean(MyDifficulty$F7_Env1[-Index3A]),mean(MyDifficulty$F7_Env1[Index3A]),mean(MyDifficulty$F8_Env1[-Index3A]),mean(MyDifficulty$F8_Env1[Index3A])),
+Conditions = rep(c("1PP","3PP"),8))
+
+
+jpeg(file="Env1 Spatial representation of objects error perpsective.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+ggplot(MyBoxPlot_Difficulty_Env1, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot, color = Conditions))+ggtitle("Env1 Spatial representation of objects error")+scale_fill_manual(name="Perspective",values = c("red2","blue2"),labels=c("1PP", "3PP"))
+dev.off()
+
+#find participants that had 3A in environment 2
+Participants_3A = unique(Data$ID[Data$Environment == "ENV2" & Data$Conditions == "ASYNCH3PP"]);
+Index3A = which(MyDifficulty$ID %in% Participants_3A);
+
+MyBoxPlot_Difficulty_Env2 <- data.frame(
+
+Coordinatex = c(rep(c(-3,-2.9,2,2.1,0,0.1,-1,-0.9,2.5,2.6,-1.5,-1.4,1,1.1,1.5,1.6),each = 1)),
+Coordinatey= c(rep(c(3,0.75,2,1,3,1.5,2,1.5),each = 2)),
+SizeDot = c(mean(MyDifficulty$F1_Env2[-Index3A]),mean(MyDifficulty$F1_Env2[Index3A]),mean(MyDifficulty$F2_Env2[-Index3A]),mean(MyDifficulty$F2_Env2[Index3A]),mean(MyDifficulty$F3_Env2[-Index3A]),mean(MyDifficulty$F3_Env2[Index3A]),mean(MyDifficulty$F4_Env2[-Index3A]),mean(MyDifficulty$F4_Env2[Index3A]),mean(MyDifficulty$F5_Env2[-Index3A]),mean(MyDifficulty$F5_Env2[Index3A]),mean(MyDifficulty$F6_Env2[-Index3A]),mean(MyDifficulty$F6_Env2[Index3A]),mean(MyDifficulty$F7_Env2[-Index3A]),mean(MyDifficulty$F7_Env2[Index3A]),mean(MyDifficulty$F8_Env2[-Index3A]),mean(MyDifficulty$F8_Env2[Index3A])),
+Conditions = rep(c("1PP","3PP"),8))
+
+jpeg(file="Env2 Spatial representation of objects error perspective.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+ggplot(MyBoxPlot_Difficulty_Env2, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot, color = Conditions))+ggtitle("Env2 Spatial representation of objects error")+scale_fill_manual(name="Perspective",values = c("red2","blue2"),labels=c("1PP", "3PP"))
+dev.off()
+
+#find participants that had 3A in environment 3
+Participants_3A = unique(Data$ID[Data$Environment == "ENV3" & Data$Conditions == "ASYNCH3PP"]);
+Index3A = which(MyDifficulty$ID %in% Participants_3A);
+
+
+MyBoxPlot_Difficulty_Env4 <- data.frame(
+
+Coordinatex = c(rep(c(-2,-1.9,-2,-1.9,0.5,0.6,2,2.1,-2.25,-2.15,-0.75,-0.65,-2.5,-2.4,2.75,2.85),each =1)),
+Coordinatey= c(rep(c(1.5,1,2.5,2,1.5,2.5,1,1),each = 2)),
+SizeDot = c(mean(MyDifficulty$F1_Env4[-Index3A]),mean(MyDifficulty$F1_Env4[Index3A]),mean(MyDifficulty$F2_Env4[-Index3A]),mean(MyDifficulty$F2_Env4[Index3A]),mean(MyDifficulty$F3_Env4[-Index3A]),mean(MyDifficulty$F3_Env4[Index3A]),mean(MyDifficulty$F4_Env4[-Index3A]),mean(MyDifficulty$F4_Env4[Index3A]),mean(MyDifficulty$F5_Env4[-Index3A]),mean(MyDifficulty$F5_Env4[Index3A]),mean(MyDifficulty$F6_Env4[-Index3A]),mean(MyDifficulty$F6_Env4[Index3A]),mean(MyDifficulty$F7_Env4[-Index3A]),mean(MyDifficulty$F7_Env4[Index3A]),mean(MyDifficulty$F8_Env4[-Index3A]),mean(MyDifficulty$F8_Env4[Index3A])),
+Conditions = rep(c("1PP","3PP"),8))
+
+
+jpeg(file="Env4 Spatial representation of objects error perspective.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+ggplot(MyBoxPlot_Difficulty_Env4, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot, color = Conditions))+ggtitle("Env4 Spatial representation of objects error")+scale_fill_manual(name="Perspective",values = c("red2","blue2"),labels=c("1PP", "3PP"))
+dev.off()
+
+#Let's do the same for synchrony (so same concept of division: group 1: synch and group 2 asynch with a ration 1/3 2/3 once we will have the full sample)
+
+
+
+#ENv1 = 1P: Y18,9,19,13,11 which corresponds to index (7,9,11,13,14)
+CoordinateX_Env1 = c(7,9,11,13,14)
+CoordinateY_Env1 = c(1.5,1.75,0.75,2.3,1,1.5,1.5,1)
+# Env2 = 3A:	Y30,04,05,28,8,01,02    which corresponds to index (1,2,4,5,6,18,19)
+CoordinateX_Env2 = c(1,2,4,5,6,18)
+CoordinateY_Env2 = c(3,0.75,2,1,3,1.5,2,1.5)
+# Env4 = 3A:	Y23,12,26,03,21,15,10    which corresponds to index (3,8,10,12,15,16,17)
+CoordinateX_Env4 = c(3,8,10,12,15,16,17)
+CoordinateY_Env4 = c(1.5,1,2.5,2,1.5,2.5,1,1)  
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV1" & Data$Conditions == "SYNCH1PP"]);
+Index1P = which(MyDifficulty$ID %in% Participants_1P);
+
+
+
+MyBoxPlot_Difficulty_Env1 <- data.frame(
+
+Coordinatex = c(rep(c(2.5,2.6,1.5,1.6,3,3.1,-0.5,-0.4,2.5,2.6,0,0.1,3,3.1,2,2.1),each = 1)),
+Coordinatey=  c(rep(c(1.5,1.75,0.75,2.3,1,1.5,1.5,1),each = 2)),
+
+SizeDot = c(mean(MyDifficulty$F1_Env1[Index1P]),mean(MyDifficulty$F1_Env1[-Index1P]),mean(MyDifficulty$F2_Env1[Index1P]),mean(MyDifficulty$F2_Env1[-Index1P]),mean(MyDifficulty$F3_Env1[Index1P]),mean(MyDifficulty$F3_Env1[-Index1P]),mean(MyDifficulty$F4_Env1[Index1P]),mean(MyDifficulty$F4_Env1[-Index1P]),mean(MyDifficulty$F5_Env1[Index1P]),mean(MyDifficulty$F5_Env1[-Index1P]),mean(MyDifficulty$F6_Env1[Index1P]),mean(MyDifficulty$F6_Env1[-Index1P]),mean(MyDifficulty$F7_Env1[Index1P]),mean(MyDifficulty$F7_Env1[-Index1P]),mean(MyDifficulty$F8_Env1[Index1P]),mean(MyDifficulty$F8_Env1[-Index1P])),
+Conditions = rep(c("Synch","Asynch"),8))
+
+MyBoxPlot_Difficulty_Env1$Groups <-factor(MyBoxPlot_Difficulty_Env1$Conditions, 
+                          levels = c("Asynch","synch" ))
+
+
+jpeg(file="Env1 Spatial representation of objects error synchrony.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+ggplot(MyBoxPlot_Difficulty_Env1, aes(x=Coordinatex, y=Coordinatey)) + geom_point(aes(size=SizeDot, color = Conditions))+ggtitle("Env1 Spatial representation of objects error")+scale_color_manual(values = c("blue2", "red2"))
+
+dev.off()
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV2" & Data$Conditions == "SYNCH1PP"]);
+Index1P = which(MyDifficulty$ID %in% Participants_1P);
+
+
+MyBoxPlot_Difficulty_Env2 <- data.frame(
+
+Coordinatex = c(rep(c(-3,-2.9,2,2.1,0,0.1,-1,-0.9,2.5,2.6,-1.5,-1.4,1,1.1,1.5,1.6),each = 1)),
+Coordinatey= c(rep(c(3,0.75,2,1,3,1.5,2,1.5),each = 2)),
+SizeDot = c(mean(MyDifficulty$F1_Env2[Index1P]),mean(MyDifficulty$F1_Env2[-Index1P]),mean(MyDifficulty$F2_Env2[Index1P]),mean(MyDifficulty$F2_Env2[-Index1P]),mean(MyDifficulty$F3_Env2[Index1P]),mean(MyDifficulty$F3_Env2[-Index1P]),mean(MyDifficulty$F4_Env2[Index1P]),mean(MyDifficulty$F4_Env2[-Index1P]),mean(MyDifficulty$F5_Env2[Index1P]),mean(MyDifficulty$F5_Env2[-Index1P]),mean(MyDifficulty$F6_Env2[Index1P]),mean(MyDifficulty$F6_Env2[-Index1P]),mean(MyDifficulty$F7_Env2[Index1P]),mean(MyDifficulty$F7_Env2[-Index1P]),mean(MyDifficulty$F8_Env2[Index1P]),mean(MyDifficulty$F8_Env2[-Index1P])),
+Conditions = rep(c("Synch","Asynch"),8))
+
+
+
+MyBoxPlot_Difficulty_Env2$Groups <-factor(MyBoxPlot_Difficulty_Env2$Conditions, 
+                          levels = c("Synch","Asynch" ))
+
+jpeg(file="Env2 Spatial representation of objects error synchrony.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+ggplot(MyBoxPlot_Difficulty_Env2, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot, color = Conditions))+ggtitle("Env2 Spatial representation of objects error")+scale_color_manual(values = c("blue2", "red2"))
+dev.off()
+
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV3" & Data$Conditions == "SYNCH1PP"]);
+Index1P = which(MyDifficulty$ID %in% Participants_1P);
+
+
+MyBoxPlot_Difficulty_Env4 <- data.frame(
+
+Coordinatex = c(rep(c(-2,-1.9,-2,-1.9,0.5,0.6,2,2.1,-2.25,-2.15,-0.75,-0.65,-2.5,-2.4,2.75,2.85),each =1)),
+Coordinatey= c(rep(c(1.5,1,2.5,2,1.5,2.5,1,1),each = 2)),
+SizeDot = c(mean(MyDifficulty$F1_Env4[Index1P]),mean(MyDifficulty$F1_Env4[-Index1P]),mean(MyDifficulty$F2_Env4[Index1P]),mean(MyDifficulty$F2_Env4[-Index1P]),mean(MyDifficulty$F3_Env4[Index1P]),mean(MyDifficulty$F3_Env4[-Index1P]),mean(MyDifficulty$F4_Env4[Index1P]),mean(MyDifficulty$F4_Env4[-Index1P]),mean(MyDifficulty$F5_Env4[Index1P]),mean(MyDifficulty$F5_Env4[-Index1P]),mean(MyDifficulty$F6_Env4[Index1P]),mean(MyDifficulty$F6_Env4[-Index1P]),mean(MyDifficulty$F7_Env4[Index1P]),mean(MyDifficulty$F7_Env4[-Index1P]),mean(MyDifficulty$F8_Env4[Index1P]),mean(MyDifficulty$F8_Env4[-Index1P])),
+Conditions = rep(c("Synch","Asynch"),8))
+
+
+
+
+
+MyBoxPlot_Difficulty_Env4$Groups <-factor(MyBoxPlot_Difficulty_Env4$Conditions, 
+                          levels = c("Synch","Asynch" ))
+
+
+jpeg(file="Env4 Spatial representation of objects error synchrony.jpeg",quality = 100, res = 200,width = 2000, height = 800)
+
+ggplot(MyBoxPlot_Difficulty_Env4, aes(x=Coordinatex, y=Coordinatey)) + 
+  geom_point(aes(size=SizeDot, color = Conditions))+ggtitle("Env4 Spatial representation of objects error")+scale_color_manual(values = c("blue2", "red2"))
+dev.off()
+
+#Now let's plot the differences of performance3 per object side (left versus right), per condition and let's check if there are some difference
+
+#We check for each environment and each participant what was the conditions:
+#Env1
+Participants_1P = unique(Data$ID[Data$Environment == "ENV1" & Data$Conditions == "SYNCH1PP"]);
+Env1_1P = which(MyDifficulty$ID %in% Participants_1P);
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV1" & Data$Conditions == "ASYNCH1PP"]);
+Env1_1A = which(MyDifficulty$ID %in% Participants_1P);
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV1" & Data$Conditions == "ASYNCH3PP"]);
+Env1_3A = which(MyDifficulty$ID %in% Participants_1P);
+
+Conditions_Env1 = vector(mode = "character", length = NumberParticipants)
+Conditions_Env1[Env1_1P] = "1P"; Conditions_Env1[Env1_1A] = "1A"; Conditions_Env1[Env1_3A]= "3A";
+Conditions_Env1_SYNCH = vector(mode = "character", length = NumberParticipants)
+Conditions_Env1_PERSP = vector(mode = "character", length = NumberParticipants)
+Conditions_Env1_SYNCH[Env1_1P]= "SYNCH";Conditions_Env1_SYNCH[-Env1_1P] = "ASYNCH";
+Conditions_Env1_PERSP[Env1_3A]= "3PP";Conditions_Env1_PERSP[-Env1_3A] = "1PP";
+#Env2
+Participants_1P = unique(Data$ID[Data$Environment == "ENV2" & Data$Conditions == "SYNCH1PP"]);
+Env2_1P = which(MyDifficulty$ID %in% Participants_1P);
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV2" & Data$Conditions == "ASYNCH1PP"]);
+Env2_1A = which(MyDifficulty$ID %in% Participants_1P);
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV2" & Data$Conditions == "ASYNCH3PP"]);
+Env2_3A = which(MyDifficulty$ID %in% Participants_1P);
+
+Conditions_Env2 = vector(mode = "character", length = NumberParticipants)
+Conditions_Env2[Env2_1P] = "1P"; Conditions_Env2[Env2_1A] = "1A"; Conditions_Env2[Env2_3A]= "3A";
+Conditions_Env2_SYNCH = vector(mode = "character", length = NumberParticipants)
+Conditions_Env2_PERSP = vector(mode = "character", length = NumberParticipants)
+Conditions_Env2_SYNCH[Env2_1P]= "SYNCH";Conditions_Env2_SYNCH[-Env2_1P] = "ASYNCH";
+Conditions_Env2_PERSP[Env2_3A]= "3PP";Conditions_Env2_PERSP[-Env2_3A] = "1PP";
+
+
+#Env4
+Participants_1P = unique(Data$ID[Data$Environment == "ENV3" & Data$Conditions == "SYNCH1PP"]);
+Env4_1P = which(MyDifficulty$ID %in% Participants_1P);
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV3" & Data$Conditions == "ASYNCH1PP"]);
+Env4_1A = which(MyDifficulty$ID %in% Participants_1P);
+
+Participants_1P = unique(Data$ID[Data$Environment == "ENV3" & Data$Conditions == "ASYNCH3PP"]);
+Env4_3A = which(MyDifficulty$ID %in% Participants_1P);
+
+Conditions_Env4 = vector(mode = "character", length = NumberParticipants)
+Conditions_Env4[Env4_1P] = "1P"; Conditions_Env4[Env4_1A] = "1A"; Conditions_Env4[Env4_3A]= "3A";
+Conditions_Env4_SYNCH = vector(mode = "character", length = NumberParticipants)
+Conditions_Env4_PERSP = vector(mode = "character", length = NumberParticipants)
+Conditions_Env4_SYNCH[Env4_1P]= "SYNCH";Conditions_Env4_SYNCH[-Env4_1P] = "ASYNCH";
+Conditions_Env4_PERSP[Env4_3A]= "3PP";Conditions_Env4_PERSP[-Env4_3A] = "1PP";
+
+
+MyBoxPlot_Difficulty_LeftRight <- data.frame(
+Val= c(MyDifficulty$F1_Env1,MyDifficulty$F2_Env1,MyDifficulty$F3_Env1,MyDifficulty$F4_Env1,MyDifficulty$F5_Env1,MyDifficulty$F6_Env1,MyDifficulty$F7_Env1,MyDifficulty$F8_Env1,MyDifficulty$F1_Env2,MyDifficulty$F2_Env2,MyDifficulty$F3_Env2,MyDifficulty$F4_Env2,MyDifficulty$F5_Env2,MyDifficulty$F6_Env2,MyDifficulty$F7_Env2,MyDifficulty$F8_Env2,MyDifficulty$F1_Env4,MyDifficulty$F2_Env4,MyDifficulty$F3_Env4,MyDifficulty$F4_Env4,MyDifficulty$F5_Env4,MyDifficulty$F6_Env4,MyDifficulty$F7_Env4,MyDifficulty$F8_Env4),
+Environment = factor(rep(c(1,2,3), each = 8*(NumberParticipants))),
+Conditions =factor(c(rep(Conditions_Env1,8),rep(Conditions_Env2,8),rep(Conditions_Env4,8))),
+Conditions_persp =factor(c(rep(Conditions_Env1_PERSP,8),rep(Conditions_Env2_PERSP,8),rep(Conditions_Env4_PERSP,8))),
+Conditions_synch = factor(c(rep(Conditions_Env1_SYNCH,8),rep(Conditions_Env2_SYNCH,8),rep(Conditions_Env4_SYNCH,8))),
+Side = factor(c(rep(c("R","R","R","L","R","L","R","R"),each = NumberParticipants),rep(c("L","R","L","L","R","L","R","R"),each = NumberParticipants),rep(c("L","L","R","R","L","L","L","R"),each = NumberParticipants))),
+ID = rep(c(1:NumberParticipants),3*8))
+
+summary(aov(Val~Side*Conditions_synch+Error(ID/(Side*Conditions_synch)),data = MyBoxPlot_Difficulty_LeftRight))
+
+jpeg(file="Conditions_Side_effect_MOCK_BSC_ROUND2__MOCK_N38_Last_trials.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=Conditions, y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+jpeg(file="Conditions_Side_effect_MOCK_BSC_ROUND2__MOCK_N38_Last_trialswithoutdot.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=Conditions, y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+   ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+
+jpeg(file="Conditions_Side_effect_MOCK_BSC_ROUND2__MOCK_N38_Last_trials_Env_withouitdot.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=interaction(Conditions,Environment), y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+   ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+
+jpeg(file="Conditions_Side_effect_MockN124_persp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=Conditions_persp, y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+jpeg(file="Conditions_Side_effect_MOCKN24_Last_trialswithoutdot_persp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=Conditions_persp, y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+   ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+
+jpeg(file="Conditions_Side_effect_MOCKN24_Last_trials_Env_withouitdot_persp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=interaction(Conditions_persp,Environment), y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+   ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+
+
+
+jpeg(file="Conditions_Side_effect_MOCKN24_Last_trials_synch.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=Conditions_synch, y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+  geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+jpeg(file="Conditions_Side_effect_MOCKN24_Last_trialswithoutdot_synch.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=Conditions_synch, y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+   ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+
+jpeg(file="Conditions_Side_effect_MOCKN24_Last_trials_Env_withouitdot_synch.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(MyBoxPlot_Difficulty_LeftRight,aes(x=interaction(Conditions_synch,Environment), y = Val, fill = Side))+    geom_boxplot(position=position_dodge(0.8))+
+   ggtitle('Side effect of conditions')+scale_fill_manual(name="Side",values =c("red2","grey60"))+labs(y = "%error")#+ylim(c(0,1.2))
+dev.off()
+
+t = summary(aov(Val~Side*Conditions+Error(ID/(Side*Conditions)),data = MyBoxPlot_Difficulty_LeftRight))
+tt = summary(aov(Val~Side*Conditions*Environment+Error(ID/(Side*Conditions)),data = MyBoxPlot_Difficulty_LeftRight))
+pairwise.t.test(MyBoxPlot_Difficulty_LeftRight$Val, MyBoxPlot_Difficulty_LeftRight$Side, p.adj = "none")
+pairwise.t.test(MyBoxPlot_Difficulty_LeftRight$Val, MyBoxPlot_Difficulty_LeftRight$Environment, p.adj = "none")
+
+
+
+t = summary(aov(Val~Side*Conditions_persp+Error(ID/(Side*Conditions_persp)),data = MyBoxPlot_Difficulty_LeftRight))
+tt = summary(aov(Val~Side*Conditions_persp*Environment+Error(ID/(Side*Conditions_persp)),data = MyBoxPlot_Difficulty_LeftRight))
+
+
+t = summary(aov(Val~Side*Conditions_synch+Error(ID/(Side*Conditions_synch)),data = MyBoxPlot_Difficulty_LeftRight))
+tt = summary(aov(Val~Side*Conditions_synch*Environment+Error(ID/(Side*Conditions_synch*Environment)),data = MyBoxPlot_Difficulty_LeftRight))
+pairwise.t.test(MyBoxPlot_Difficulty_LeftRight$Val, MyBoxPlot_Difficulty_LeftRight$Side, p.adj = "none")
+pairwise.t.test(MyBoxPlot_Difficulty_LeftRight$Val, MyBoxPlot_Difficulty_LeftRight$Conditions, p.adj = "none")
+
+```
+
+Change No change
+
+```{r}
+#Pilot behav2 
+# NAME_FILE = "E:\\Switchdrive\\PhD\\Research\\ABM\\ABM_BEHAVOR_YOUNG\\DATA\\PilotV2\\Analysis_BehavP2_YoungHealthy_291220_AllinOne_AllTime.xlsx"
+# RANGE = "A2:T2201"
+
+#MRI
+# NAME_FILE_2 = "E:\\MRI_YOUNG_HEALTHY\\MRI\\V3\\ANALYSIS\\Analysis_MRI_YoungHealthy_090221_FullSample_AllTime.xlsx"
+# RANGE_2 = "A2:T2161"
+
+#Mock
+NAME_FILE = "E:\\Switchdrive\\PhD\\Research\\ABM\\ABM_MRI_MOCK\\ANALYSIS\\Analysis_Mock_YoungHealthy_020221_FullSample.xlsx"
+RANGE = "A2:W3511"
+Data <- read_xlsx((NAME_FILE),sheet = 2, range = RANGE, col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+colnames(Data) <- c("ID","Hit","Miss","FalseAlarm","CorrectRejection","N_True","N_False","Environment","Conditions","Answer","Performance","PerformanceHitCR","Trials","ObjectIndex","Ownership","Agency","Control1","Control2","Threat","Round_BSC","MeanQ1","MeanQ2","Timing","Synch","Perspective")
+Ntrials = 15 # here you put the number of total trials: 40 if you dont count catch trials, 45 otherwise
+# Data = Data [,!grepl("MeanQ2",names(Data ))]
+
+# Data_2 <- read_xlsx((NAME_FILE_2),sheet = 2, range = RANGE_2, col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+# colnames(Data_2) <- c("ID","Hit","Miss","FalseAlarm","CorrectRejection","N_True","N_False","Environment","Conditions","Answer","Performance","PerformanceHitCR","Trials","Ownership","Agency","Control1","Control2","Threat","MeanQ1","Timing","Synch","Perspective")
+# Ntrials = 15 # here you put the number of total trials: 40 if you dont count catch trials, 45 otherwise
+
+# Data = rbind(Data_1, Data_2)
+#remove outliers:
+#Data      <- Data[Data$ID != 'Mock_Y20',] # super low score of performance less than 50% in 2 conditions
+Data      <- Data[Data$ID != 'Mock_Y30',] # super low score of performance less than 50% in 2 conditions
+Data      <- Data[Data$ID != 'Mock_Y18',] # Technical bug of tracking during BSC
+Data      <- Data[Data$ID != 'Mock_Y14',] #technical bug: mismatch between skin color (dark) and avatar skin color
+Data      <- Data[Data$ID != 'Mock_Y06',] #Answered always that the environment changed 
+Data$Timing[Data$Timing == "FIRST"] = 1;Data$Timing[Data$Timing == "MID"] = 2;Data$Timing[Data$Timing == "LAST"] = 3;
+
+
+
+#Let's convert these parameters into factor
+Data$Conditions   <- factor(Data$Conditions)
+Data$Environment   <- factor(Data$Environment)
+Data$PerformanceHitCR <- factor(Data$PerformanceHitCR)
+
+#Let's divide the conditions into synch vs asynch and 1PP vs 3pp
+Data$Synch[Data$Conditions == "SYNCH1PP"] = "SYNCH"
+Data$Synch[Data$Conditions == "ASYNCH1PP"] = "ASYNCH";Data$Synch[Data$Conditions == "ASYNCH3PP"] = "ASYNCH"
+Data$Perspective[Data$Conditions == "SYNCH1PP"] = "1PP"
+Data$Perspective[Data$Conditions == "ASYNCH1PP"] = "1PP";Data$Perspective[Data$Conditions == "ASYNCH3PP"] = "3PP"
+Data$Stim[Data$PerformanceHitCR == "cr"] = "NoChange";Data$Stim[Data$PerformanceHitCR == "fa"] = "NoChange";Data$Stim[Data$PerformanceHitCR == "hit"] = "Change";Data$Stim[Data$PerformanceHitCR == "miss"] = "Change"
+Data$Conditions <-factor(Data$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+# # 
+# Data$Stim[Data$PerformanceHitCR == 1] = "NoChange";Data$Stim[Data$PerformanceHitCR == 0]  = "Change";Data$Stim[Data$PerformanceHitCR == "hit"] = "Change";Data$Stim[Data$PerformanceHitCR == 2] = "Change"
+
+#here if we want to remove catch trials
+#Data      <- Data[Data$Trials != 0,]
+
+
+#if DATA for behav pilot 2:
+Data      <- Data[Data$ID != 'P030_MSY',];Data      <- Data[Data$ID != 'P010_MSY',]; # kept answering always yes/no for one environment
+df5$ID[df5$Performance < 0.5]
+Data      <- Data[Data$ID != 'P042_MSY',];Data      <- Data[Data$ID != 'P012_MSY',]; 
+# =  "P042_MSY" "P012_MSY"
+df = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection) ~  ID+Conditions+Environment+factor(Synch)+factor(Perspective)+N_True+N_False+Timing,Data,mean)
+
+df_tot = aggregate(cbind(Hit,CorrectRejection,Agency,Ownership,Control1,Control2) ~  ID+Conditions+Environment+factor(Synch)+factor(Perspective)+N_True+N_False+Stim,Data,mean)
+
+df_tot$NewBSC = ((df_tot$Agency+df_tot$Ownership)/2)-((df_tot$Control1+df_tot$Control2)/2)
+
+
+df_tot$Conditions <-factor(df_tot$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$Conditions <-factor(df$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df$`factor(Synch)` <-factor(df$`factor(Synch)`, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df$`factor(Perspective)` <-factor(df$`factor(Perspective)`, 
+                          levels = c("1PP","3PP"))
+# df$Timing <-factor(df$Timing, 
+#                           levels = c("FIRST","MID","LAST"))
+
+
+df2 = aggregate(cbind(Hit,Miss,FalseAlarm,CorrectRejection,Environment)~ID+Conditions+factor(Synch)+factor(Perspective)+N_True+N_False,Data,mean)
+                df2$Conditions <-factor(df2$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+df2$`factor(Synch)` <-factor(df2$`factor(Synch)`, 
+                          levels = c("SYNCH","ASYNCH"
+))
+df2$`factor(Perspective)` <-factor(df2$`factor(Perspective)`, 
+                          levels = c("1PP","3PP"
+))
+
+
+df3 = aggregate(cbind(Performance,Hit,CorrectRejection,Agency,Ownership,Control1,Control2)~ID+Conditions+factor(Synch)+factor(Perspective)+factor(Stim)+Round_BSC,Data,mean)
+df3$Conditions <-factor(df3$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+
+df4 = aggregate(Performance ~ID+Conditions+factor(Synch)+factor(Perspective)+factor(Stim)+Timing,Data,mean)
+df4$Conditions <-factor(df4$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+# df4$`factor(Timing)` <-factor(df4$`factor(Timing)`, 
+#                           levels = c("FIRST","MID","LAST"))
+
+df5 = aggregate(Performance ~ID+Conditions,Data,mean)
+df5$Conditions <-factor(df5$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+))
+jpeg(file="Conditions_Stimuli_MERGED_MRI_MOCK_N38_FULL.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df3,aes(x=Conditions, y = Performance , fill = `factor(Stim)`))+    geom_boxplot(position=position_dodge(0.8))+
+ geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Performance')+scale_fill_manual(name="Stimuli",values =c("grey","darkorange"))
+dev.off()
+
+jpeg(file="Conditions_Stimuli_MERGED_MRI_MOCK_N38_FIRST.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df4[df4$`factor(Timing)` == "FIRST",],aes(x=Conditions, y = Performance , fill = `factor(Stim)`))+    geom_boxplot(position=position_dodge(0.8))+
+ geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Performance')+scale_fill_manual(name="Stimuli",values =c("grey","darkorange"))
+dev.off()
+
+jpeg(file="Conditions_Stimuli_MERGED_MRI_MOCK_N38_MID.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df4[df4$`factor(Timing)` == "MID",],aes(x=Conditions, y = Performance , fill = `factor(Stim)`))+    geom_boxplot(position=position_dodge(0.8))+
+ geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Performance')+scale_fill_manual(name="Stimuli",values =c("grey","darkorange"))
+dev.off()
+
+jpeg(file="Conditions_Stimuli_MERGED_MRI_MOCK_N38_LAST.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggplot(df4[df4$`factor(Timing)` == "LAST",],aes(x=Conditions, y = Performance , fill = `factor(Stim)`))+    geom_boxplot(position=position_dodge(0.8))+
+ geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Performance')+scale_fill_manual(name="Stimuli",values =c("grey","darkorange"))
+dev.off()
+
+
+summary(aov(Performance  ~ Conditions + Error(ID/Conditions),data = Data)) #no sign
+summary(aov(Performance  ~ Conditions * `factor(Stim)`+Error(ID/(Conditions)),data = df4))
+summary(aov(Performance  ~ Conditions * `factor(Stim)`*Timing+Error(ID/(Conditions* `factor(Stim)`)),data = df4))
+
+mod1 = summary(glmer(Performance ~ Conditions + Environment+ (1|ID),data = Data[Data$Stim == "Change" & Data$ObjectIndex != 9,], family = "binomial"))
+mod2 = summary(glmer(Performance ~ Conditions * factor(Stim) + (1|ID),data = Data, family = "binomial"))
+mod2 = summary(glmer(Performance ~ Conditions * factor(Stim) + (1|ID/Conditions),data = Data, family = "binomial"))
+mod3 = summary(glmer(Performance ~ Conditions * factor(Stim) +(Timing|ID),data = Data, family = "binomial"))
+interplot::interplot(m = mod2, var1 = "factor(Stim)", var2 = "Conditions")
+#significant difference in change versus no change, so what happens inchange?
+Data_change = Data[Data$Stim == "Change",]
+Data_Nochange = Data[Data$Stim == "NoChange",]
+
+
+summary(glmer(Performance ~ Conditions + (1|ID/Conditions),data = Data_change, family = "binomial"))
+
+summary(glmer(Performance ~ Conditions * Timing+ (1|ID),data = Data_change, family = "binomial"))
+summary(glmer(Performance ~ Conditions + (1|ID/Conditions),data = Data_Nochange, family = "binomial"))
+
+summary(glmer(Performance ~ Conditions * Timing+ (1|ID),data = Data_Nochange, family = "binomial"))
+
+jpeg(file="Conditions_Stimuli_MERGED_MRI_MOCK_N38_Change_Timing.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggplot(df4[df4$`factor(Stim)` == "Change",],aes(x=`factor(Timing)`, y = Performance , fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+     geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Performance')+scale_fill_manual(name="Stimuli",values =c("red2","lightsalmon2","grey60"))
+dev.off()
+jpeg(file="Conditions_Stimuli_MERGED_MRI_MOCK_N38_NoChange_Timing.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggplot(df4[df4$`factor(Stim)` == "NoChange",],aes(x=`factor(Timing)`, y = Performance , fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+
+     geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('Performance')+scale_fill_manual(name="Stimuli",values =c("red2","lightsalmon2","grey60"))
+dev.off()
+
+summary(aov(Performance ~Conditions*`factor(Timing)`+Error(ID/Conditions),data = df4[df4$`factor(Stim)` == "NoChange",]))
+summary(aov(Performance ~factor(Conditions)*`factor(Timing)`+Error(ID/(factor(Conditions)*`factor(Timing)`)),data = df4[df4$`factor(Stim)` == "Change",]))
+################################################################################################
+
+# #Pilot behav2 
+# # NAME_FILE = "E:\\Switchdrive\\PhD\\Research\\ABM\\ABM_BEHAVOR_YOUNG\\DATA\\PilotV2\\Analysis_BehavP2_YoungHealthy_291220_AllinOne_AllTime.xlsx"
+# # RANGE = "A2:T2201"
+# 
+# #MRI
+# # NAME_FILE = "E:\\MRI_YOUNG_HEALTHY\\MRI\\V3\\ANALYSIS\\Analysis_MRI_YoungHealthy_090221_FullSample_AllTime.xlsx"
+# # RANGE = "A2:T2161"
+# 
+# #Mock
+# NAME_FILE = "E:\\Switchdrive\\PhD\\Research\\ABM\\ABM_MRI_MOCK\\ANALYSIS\\Analysis_Mock_YoungHealthy_020221_FullSample.xlsx"
+# RANGE = "A2:U3511"
+# Data <- read_xlsx((NAME_FILE),sheet = 2, range = RANGE, col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+# colnames(Data) <- c("ID","Hit","Miss","FalseAlarm","CorrectRejection","N_True","N_False","Environment","Conditions","Answer","Performance","PerformanceHitCR","Trials","Ownership","Agency","Control1","Control2","Threat","MeanQ1","MeanQ2","Synch","Perspective")
+# Ntrials = 15 # here you put the number of total trials: 40 if you dont count catch trials, 45 otherwise
+# 
+# #remove outliers:
+# #Data      <- Data[Data$ID != 'Mock_Y20',] # super low score of performance less than 50% in 2 conditions
+# #Data      <- Data[Data$ID != 'Mock_Y30',] # super low score of performance less than 50% in 2 conditions
+# Data      <- Data[Data$ID != 'Mock_Y18',] # Technical bug of tracking during BSC
+# Data      <- Data[Data$ID != 'Mock_Y14',] #technical bug: mismatch between skin color (dark) and avatar skin color
+# #Data      <- Data[Data$ID != 'Mock_Y06',] #Answered always that the environment changed 
+# 
+# 
+# #Let's convert these parameters into factor
+# Data$Conditions   <- factor(Data$Conditions)
+# Data$Environment   <- factor(Data$Environment)
+# Data$PerformanceHitCR <- factor(Data$PerformanceHitCR)
+# 
+# #Let's divide the conditions into synch vs asynch and 1PP vs 3pp
+# Data$Synch[Data$Conditions == "SYNCH1PP"] = "SYNCH"
+# Data$Synch[Data$Conditions == "ASYNCH1PP"] = "ASYNCH";Data$Synch[Data$Conditions == "ASYNCH3PP"] = "ASYNCH"
+# Data$Perspective[Data$Conditions == "SYNCH1PP"] = "1PP"
+# Data$Perspective[Data$Conditions == "ASYNCH1PP"] = "1PP";Data$Perspective[Data$Conditions == "ASYNCH3PP"] = "3PP"
+# Data$Stim[Data$PerformanceHitCR == "cr"] = "NoChange";Data$Stim[Data$PerformanceHitCR == "fa"] = "NoChange";Data$Stim[Data$PerformanceHitCR == "hit"] = "Change";Data$Stim[Data$PerformanceHitCR == "miss"] = "Change"
+# 
+# # # 
+# # Data$Stim[Data$PerformanceHitCR == 1] = "NoChange";Data$Stim[Data$PerformanceHitCR == 0]  = "Change";Data$Stim[Data$PerformanceHitCR == "hit"] = "Change";Data$Stim[Data$PerformanceHitCR == 2] = "Change"
+# # Data$truesync    <- ifelse(Data$synchrony == '1PPSync','sync','async')
+# # Data$perspect    <- ifelse(Data$synchrony == '3PPAsync','3PP','1PP')
+# #here if we want to remove catch trials
+# #Data      <- Data[Data$Trials != 0,]
+# 
+# 
+# #if DATA for behav pilot 2:
+# Data      <- Data[Data$ID != 'P030_MSY',];Data      <- Data[Data$ID != 'P010_MSY',]; # kept answering always yes/no for one environment
+# df5$ID[df5$Performance < 0.5]
+# Data      <- Data[Data$ID != 'P042_MSY',];Data      <- Data[Data$ID != 'P012_MSY',]; 
+# # =  "P042_MSY" "P012_MSY"
+
+df_tot = aggregate(cbind(Hit,CorrectRejection,Agency,Ownership,Control1,Control2) ~  ID+Conditions+Environment+N_True+N_False,Data,mean)
+
+# df_tot$NewBSC = (df_tot$Agency+df_tot$Ownership)/2-(df_tot$Control1+df_tot$Control2)/2
+# df_tot$NewBSC2 = (df_tot$Agency+df_tot$Ownership)/2
+# 
+# df_tot$Conditions <-factor(df_tot$Conditions, 
+#                           levels = c("SYNCH1PP","ASYNCH1PP"
+# , "ASYNCH3PP"))
+
+df3$NewBSC = (df3$Agency[df3$Round_BSC == 2]+df3$Ownership[df3$Round_BSC == 2])/2-(df3$Control1[df3$Round_BSC == 2]+df3$Control2[df3$Round_BSC == 2])/2
+df3$NewBSC2 = (df3$Agency[df3$Round_BSC == 2]+df3$Ownership[df3$Round_BSC == 2])/2
+
+df3$Conditions <-factor(df3$Conditions, 
+                          levels = c("SYNCH1PP","ASYNCH1PP"
+, "ASYNCH3PP"))
+
+
+# df_tot_Change = df_tot[df_tot$Stim == "Change",]
+df_corr = data.frame(
+  
+  NewBSC_SMAS = df3$NewBSC[df3$Conditions == "SYNCH1PP"]-df3$NewBSC[df3$Conditions == "ASYNCH1PP"],
+    NewBSC_SMAS3 =df3$NewBSC[df3$Conditions == "SYNCH1PP"]-df3$NewBSC[df3$Conditions == "ASYNCH3PP"],
+    Agency_SMAS = df3$Agency[df3$Conditions == "SYNCH1PP"]-df3$Agency[df3$Conditions == "ASYNCH1PP"],
+    Agency_SMAS3 =df3$Agency[df3$Conditions == "SYNCH1PP"]-df3$Agency[df3$Conditions == "ASYNCH3PP"],
+  Ownership_SMAS = df3$Ownership[df3$Conditions == "SYNCH1PP"]-df3$Ownership[df3$Conditions == "ASYNCH1PP"],
+    Ownership_SMAS3 =df3$Ownership[df3$Conditions == "SYNCH1PP"]-df3$Ownership[df3$Conditions == "ASYNCH3PP"],
+  Change_SMAS = df3$Hit[df3$Conditions == "SYNCH1PP"]-df3$Hit[df3$Conditions == "ASYNCH3PP"],  
+   Change_SMAS3 = df3$Hit[df3$Conditions == "SYNCH1PP"]-df3$Hit[df3$Conditions == "ASYNCH3PP"],
+  
+    NoChange_SMAS = df3$CorrectRejection[df3$Conditions == "SYNCH1PP"]-df3$CorrectRejection[df3$Conditions == "ASYNCH3PP"],  
+   NoChange_SMAS3 = df3$CorrectRejection[df3$Conditions == "SYNCH1PP"]-df3$CorrectRejection[df3$Conditions == "ASYNCH3PP"],
+  Change_synch1PP = df3$Hit[df3$Conditions == "SYNCH1PP"],
+   Change_asynch1PP = df3$Hit[df3$Conditions == "ASYNCH1PP"],
+   Change_asynch3PP = df3$Hit[df3$Conditions == "ASYNCH3PP"],
+  NoChange_synch1PP = df3$CorrectRejection[df3$Conditions == "SYNCH1PP"],
+   NoChange_asynch1PP = df3$CorrectRejection[df3$Conditions == "ASYNCH1PP"],
+   NoChange_asynch3PP = df3$CorrectRejection[df3$Conditions == "ASYNCH3PP"],
+   NewBSC_synch1pp = df3$NewBSC[df3$Conditions == "SYNCH1PP"],
+   NewBSC_asynch1pp = df3$NewBSC[df3$Conditions == "ASYNCH1PP"],
+   NewBSC_asynch3pp = df3$NewBSC[df3$Conditions == "ASYNCH3PP"],
+   Ownership_synch1pp = df3$Ownership[df3$Conditions == "SYNCH1PP"],
+   Ownership_asynch1pp = df3$Ownership[df3$Conditions == "ASYNCH1PP"],
+   Ownership_asynch3pp = df3$Ownership[df3$Conditions == "ASYNCH3PP"],
+   Agency_synch1pp = df3$Agency[df3$Conditions == "SYNCH1PP"],
+   Agency_asynch1pp = df3$Agency[df3$Conditions == "ASYNCH1PP"],
+   Agency_asynch3pp = df3$Agency[df3$Conditions == "ASYNCH3PP"]
+  
+)
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC Change SMAS.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+  ggscatter(df_corr,x ="NewBSC_SMAS",  y ="Change_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and NewBSC synch-asynch 1pp")
+  dev.off()
+  jpeg(file="CorrMERGEDMRI_MOCK NewBSC Change SMAS3.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+    ggscatter(df_corr,x ="NewBSC_SMAS3",  y ="Change_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and NewBSC synch-asynch 3pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC noChange SMAS.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+  ggscatter(df_corr,x ="NewBSC_SMAS",  y ="NoChange_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and NewBSC synch-asynch 1pp")
+  dev.off()
+  jpeg(file="CorrMERGEDMRI_MOCK NewBSC NOChange SMAS3.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+    ggscatter(df_corr,x ="NewBSC_SMAS3",  y ="NoChange_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and NewBSC synch-asynch 3pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC Change synch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+
+ggscatter(df_corr,x ="NewBSC_synch1pp",  y ="Change_synch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and NewBSC synch 1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC Change asynch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="NewBSC_asynch1pp",  y ="Change_asynch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and NewBSC asynch1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC Change asynch3pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="NewBSC_asynch3pp",  y ="Change_asynch3PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and NewBSC asynch 3pp")
+  
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC noChange synch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="NewBSC_synch1pp",  y ="NoChange_synch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nnochange and NewBSC synch 1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC noChange asynch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="NewBSC_asynch1pp",  y ="NoChange_asynch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and NewBSC asynch 1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK NewBSC noChange synch3pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="NewBSC_asynch3pp",  y ="NoChange_asynch3PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and NewBSC asynch 3pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK Agency Change synch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggscatter(df_corr,x ="Agency_synch1pp",  y ="Change_synch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and Agency synch1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK Agency Change asynch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Agency_asynch1pp",  y ="Change_asynch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and Agency asynch 1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK Agency Change asynch3pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Agency_asynch3pp",  y ="Change_asynch3PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and Agency asynch 3pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK Agency NoChange synch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Agency_synch1pp",  y ="NoChange_synch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and Agency synch1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK Agency NoChange asynch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Agency_asynch1pp",  y ="NoChange_asynch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and Agency asynch 1pp")
+dev.off()
+jpeg(file="CorrMERGEDMRI_MOCK Agency NoChange asynch3pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Agency_asynch3pp",  y ="NoChange_asynch3PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and Agency asynch 3pp")
+    dev.off()
+    jpeg(file="CorrMERGEDMRI_MOCK Ownership NoChange synch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+
+ggscatter(df_corr,x ="Ownership_synch1pp",  y ="NoChange_synch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and Ownership synch1pp")
+dev.off()
+    jpeg(file="CorrMERGEDMRI_MOCK Ownership NoChange asynch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggscatter(df_corr,x ="Ownership_asynch1pp",  y ="NoChange_asynch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and Ownership asynch 1pp")
+dev.off()
+    jpeg(file="CorrMERGEDMRI_MOCK Ownership NoChange asynch3pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+ggscatter(df_corr,x ="Ownership_asynch3pp",  y ="NoChange_asynch3PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation nochange and Ownership asynch 3pp")
+dev.off()
+    jpeg(file="CorrMERGEDMRI_MOCK Ownership Change synch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+  ggscatter(df_corr,x ="Ownership_synch1pp",  y ="Change_synch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and Ownership synch1pp")
+  dev.off()
+      jpeg(file="CorrMERGEDMRI_MOCK Ownership Change asynch1pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Ownership_asynch1pp",  y ="Change_asynch1PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and Ownership asynch 1pp")
+dev.off()
+    jpeg(file="CorrMERGEDMRI_MOCK Ownership Change asynch3pp.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Ownership_asynch3pp",  y ="Change_asynch3PP", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and Ownership asynch 3pp")
+  
+  dev.off()
+      jpeg(file="CorrMERGEDMRI_MOCK agency Change SMAS.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+  
+  ggscatter(df_corr,x ="Agency_SMAS",  y ="Change_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and BSCAgency synch-asynch 1pp")
+  dev.off()
+        jpeg(file="CorrMERGEDMRI_MOCK agency Change SMAS3.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+  
+    ggscatter(df_corr,x ="Agency_SMAS3",  y ="Change_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and BSCAgency synch-asynch 3pp")
+    dev.off()
+          jpeg(file="CorrMERGEDMRI_MOCK agency noChange SMAS.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+
+  ggscatter(df_corr,x ="Agency_SMAS",  y ="NoChange_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation Nochange and BSCAgency synch-asynch 1pp")
+  dev.off()
+        jpeg(file="CorrMERGEDMRI_MOCK agency noChange SMAS3.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+  
+    ggscatter(df_corr,x ="Agency_SMAS3",  y ="NoChange_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation Nochange and BSCAgency synch-asynch 3pp")
+    dev.off()
+          jpeg(file="CorrMERGEDMRI_MOCK ownership Change SMAS.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+    
+  ggscatter(df_corr,x ="Ownership_SMAS",  y ="Change_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and BSCOwnership synch-asynch 1pp")
+  dev.off()
+            jpeg(file="CorrMERGEDMRI_MOCK ownership Change SMAS3.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggscatter(df_corr,x ="Ownership_SMAS3",  y ="Change_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation change and BSCOwnership synch-asynch 3pp")
+dev.off()
+          jpeg(file="CorrMERGEDMRI_MOCK ownership noChange SMAS.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+  ggscatter(df_corr,x ="Ownership_SMAS",  y ="NoChange_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation Nochange and BSCOwnership synch-asynch 3pp")
+  dev.off()
+            jpeg(file="CorrMERGEDMRI_MOCK ownership noChange SMAS3.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+    ggscatter(df_corr,x ="Ownership_SMAS3",  y ="NoChange_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation Nochange and BSCOwnership synch-asynch 3pp")
+    
+    dev.off()
+              jpeg(file="NewBSC_MOCK_N24.jpeg",quality = 100, res = 200,width = 1000, height = 800)
+
+ggplot(df_tot,aes(x=Conditions, y = NewBSC, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+     geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('BSC')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))
+h = aov(NewBSC~Conditions + Error(ID/Conditions),data = df_tot)
+emm = emmeans(h,~Conditions)
+pairs(emm)
+summary(h)
+
+
+
+ggplot(df_tot,aes(x=Conditions, y = NewBSC2, fill = Conditions))+    geom_boxplot(position=position_dodge(0.8))+     geom_dotplot(binaxis='y', stackdir='center', position=position_dodge(0.8),dotsize = 0.5) + ggtitle('BSC')+scale_fill_manual(name="BSC",values =c("red2","lightsalmon2","grey60"))
+h = aov(NewBSC2~Conditions + Error(ID/Conditions),data = df_tot)
+emm = emmeans(h,~Conditions)
+pairs(emm)
+summary(h)
+```
+
+ANC analysis
+```{r}
+
+
+ParticipantsEAM <- 22
+MyEAM_SYNCH_CORR <- read_xlsx(("../DATA/EAM_1WEEK_AFTERXP_MOCK_RAW.xlsx"),sheet = 2, range = "A2:AF27", col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+colnames(MyEAM_SYNCH_CORR) <- c("ID","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10","E11","E12","E13","E14","E15","E16","E17","E18","E19","E20","E21","E22","EAMI1","EAMI2","EAMI3","EAMI4","EAMI5","EAMI6","EAMI7","EAMI8","Order")
+
+MyEAM_ASYNCH_CORR <- read_xlsx(("../DATA/EAM_1WEEK_AFTERXP_MOCK_RAW.xlsx"),sheet = 3, range = "A2:AF27", col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+colnames(MyEAM_ASYNCH_CORR) <- c("ID","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10","E11","E12","E13","E14","E15","E16","E17","E18","E19","E20","E21","E22","EAMI1","EAMI2","EAMI3","EAMI4","EAMI5","EAMI6","EAMI7","EAMI8","Order")
+
+MyEAM_ASYNCH3PP_CORR <- read_xlsx(("../DATA/EAM_1WEEK_AFTERXP_MOCK_RAW.xlsx"),sheet = 1, range = "A2:AF27", col_names = FALSE,col_types = NULL, na = "", trim_ws = TRUE, skip = 0,progress = readxl_progress(), .name_repair = "unique");
+colnames(MyEAM_ASYNCH3PP_CORR) <- c("ID","E1","E2","E3","E4","E5","E6","E7","E8","E9","E10","E11","E12","E13","E14","E15","E16","E17","E18","E19","E20","E21","E22","EAMI1","EAMI2","EAMI3","EAMI4","EAMI5","EAMI6","EAMI7","EAMI8","Order")
+
+
+
+#sort by name to have it in the same order than BSC and performance
+MyEAM_SYNCH_CORR <- MyEAM_SYNCH_CORR[order(MyEAM_SYNCH_CORR$ID),]
+MyEAM_ASYNCH_CORR <- MyEAM_ASYNCH_CORR[order(MyEAM_ASYNCH_CORR$ID),]
+MyEAM_ASYNCH3PP_CORR <- MyEAM_ASYNCH3PP_CORR[order(MyEAM_ASYNCH3PP_CORR$ID),]
+
+MyEAM_SYNCH_CORR$Conditions = "SYNCH1PP"; MyEAM_ASYNCH_CORR$Conditions = "ASYNCH1PP";MyEAM_ASYNCH3PP_CORR$Conditions = "ASYNCH3PP";
+
+ANC = rbind(MyEAM_SYNCH_CORR,MyEAM_ASYNCH_CORR);ANC = rbind(ANC,MyEAM_ASYNCH3PP_CORR);
+
+#remove outliers 
+NAME = c("Mock_Y06","Mock_Y14","Mock_Y18","Mock_Y30")
+ANC <- ANC[! ANC$ID %in% NAME, ]
+ # On the excel files, the EAMI score correspond to the item number. Here we are scaling each item according to the good scale. For example, EAMI 1: " how vivace is your memory?": 1. Very vivace (correspond to 7),2. vivace (corresponds to 6) etc etc.
+rescale <- function(Myvariable){
+      car::recode(Myvariable , "1=7;2=6;3=5;4=4;5=3;6=2;7=1")
+
+}
+
+rescale4 <- function(Myvariable){
+      car::recode(Myvariable , "1=5;2=4;3=3;4=2;5=1")
+
+}
+
+rescaleS <- function(Myvariable){
+
+    car::recode(Myvariable , "1=4;2=3;3=2;4=1")
+       
+    
+}  
+rescaleS2 <- function(Myvariable){
+
+    car::recode(Myvariable , "1=1;2=0;")
+}  
+rescaleS3 <- function(Myvariable){
+
+    car::recode(Myvariable , "-1 = 0; 0 = 0.5;1 = 1;")
+}  
+ANC$EAMI2<-rescale4(ANC$EAMI2)
+ANC$EAMI3<-rescale(ANC$EAMI3)
+ANC$EAMI1<-rescale(ANC$EAMI1)
+ANC$EAMI4<-rescaleS(ANC$EAMI4)
+ANC$EAMI5<-rescaleS(ANC$EAMI5)
+ANC$EAMI7<-rescaleS2(ANC$EAMI7)
+ANC$E12<-rescaleS3(ANC$E12)
+ANC$E14<-rescaleS2(ANC$E14)
+#now we normalize the answer to have everything between 0 and 1
+
+ANC$EAMI1 <- ANC$EAMI1/7
+ANC$EAMI2<- ANC$EAMI2/5
+ANC$EAMI3 <- ANC$EAMI3/7
+ANC$EAMI4 <- ANC$EAMI4/4
+ANC$EAMI5<-ANC$EAMI5/4
+ANC$EAMI6<-ANC$EAMI6/100
+ANC$EAMI8<-ANC$EAMI8/100
+ANC$E1 <- ANC$E1/7
+ANC$E2 <- ANC$E2/7
+ANC$E3 <- ANC$E3/7
+ANC$E4 <- ANC$E4/7
+ANC$E5 <- ANC$E5/7
+ANC$E6 <- ANC$E6/7
+ANC$E7 <- ANC$E7/7
+ANC$E8 <- ANC$E8/7
+ANC$E9 <- ANC$E9/7
+ANC$E10 <- ANC$E10/7
+ANC$E11 <- ANC$E11/7
+ANC$E13 <- ANC$E13/7
+ANC$E15 <- ANC$E15/7
+ANC$E16 <- ANC$E16/7
+ANC$E17 <- ANC$E17/7
+ANC$E18 <- ANC$E18/7
+ANC$E19 <- ANC$E19/7
+ANC$E20 <- ANC$E20/7
+
+
+#Mock Y10 has missing value for E8 in ASYNCH conditions. we replace this missing value by the mean of the value of the other participants:
+MyEAM_ASYNCH_CORR$E8[MyEAM_ASYNCH_CORR$ID == "Mock_Y10"] = mean(MyEAM_ASYNCH_CORR$E8,na.rm = TRUE)
+
+ANC_BSC = merge(ANC,df5,by = "ID")
+ANC$ID[ANC$ID == "M ock_Y13"] = "Mock_Y13"
+
+ANC_SYNCH = ANC[ANC$Conditions == "SYNCH1PP",]
+ANC_ASYNCH = ANC[ANC$Conditions == "ASYNCH1PP",]
+ANC_ASYNCH3PP = ANC[ANC$Conditions == "ASYNCH3PP",]
+
+#tO HAVE THEM ALL IN THE SAME ORDER
+ANC_SYNCH <- ANC_SYNCH[order(ANC_SYNCH$ID),]
+ANC_ASYNCH <- ANC_ASYNCH[order(ANC_ASYNCH$ID),]
+ANC_ASYNCH3PP <- ANC_ASYNCH3PP[order(ANC_ASYNCH3PP$ID),]
+
+#PCA on diff between synch 1PP and asynch 3PP
+EAM_SMAS.pca = prcomp(ANC_SYNCH[,c(2:6, 8:14, 16:21)]-ANC_ASYNCH[,c(2:6, 8:14, 16:21)], center = TRUE,scale. = TRUE)
+EAM_SMAS3.pca = prcomp(ANC_SYNCH[,c(2:6, 8:14, 16:21)]-ANC_ASYNCH3PP[,c(2:6, 8:14, 16:21)], center = TRUE,scale. = TRUE)
+EAMI_SMAS.pca = prcomp(ANC_SYNCH[,c(24:31)]-ANC_ASYNCH[,c(24:31)], center = TRUE,scale. = TRUE)
+EAMI_SMAS3.pca = prcomp(ANC_SYNCH[,c(24:31)]-ANC_ASYNCH3PP[,c(24:31)], center = TRUE,scale. = TRUE)
+
+
+EAM_S.pca = prcomp(ANC_SYNCH[,c(2:6, 8:14, 16:21)], center = TRUE,scale. = TRUE)
+EAM_AS.pca = prcomp(ANC_ASYNCH[,c(2:6, 8:14, 16:21)], center = TRUE,scale. = TRUE)
+EAMI_AS3.pca = prcomp(ANC_ASYNCH3PP[,c(2:6, 8:14, 16:21)], center = TRUE,scale. = TRUE)
+EAMI_S.pca = prcomp(ANC_SYNCH[,c(24:31)], center = TRUE,scale. = TRUE)
+EAMI_AS.pca = prcomp(ANC_ASYNCH[,c(24:31)], center = TRUE,scale. = TRUE)
+EAMI_AS3.pca = prcomp(ANC_ASYNCH3PP[,c(24:31)], center = TRUE,scale. = TRUE)
+
+
+
+c((MyPerformance$Hit_Synch+MyPerformance$CorrectRejection_Synch)/(MyPerformance$N_False_Synch+MyPerformance$N_True_Synch),(MyPerformance$Hit_Asynch+MyPerformance$CorrectRejection_Asynch)/(MyPerformance$N_False_Asynch+MyPerformance$N_True_Asynch),(MyPerformance$Hit_Asynch3PP+MyPerformance$CorrectRejection_Asynch3PP)/(MyPerformance$N_False_Asynch3PP+MyPerformance$N_True_Asynch3PP))
+
+#To have a look at the percentage of variance explained for each principal component
+library(factoextra)
+#jpeg(file="eigenvalueSynch_N20.jpeg")
+
+fviz_eig(EAM_SMAS.pca,addlabels = TRUE)#8-9 factors to explain 95% of variance
+fviz_eig(EAM_SMAS3.pca,addlabels = TRUE)
+fviz_eig(EAMI_SMAS.pca,addlabels = TRUE)
+fviz_eig(EAMI_SMAS3.pca,addlabels = TRUE)
+
+#put everything together
+dataframe = data.frame(
+  EAM_SMAS = EAM_SMAS.pca$x[,1],
+  EAM_SMAS3 = EAM_SMAS3.pca$x[,1],
+  EAMI_SMAS = EAMI_SMAS.pca$x[,1],
+  EAMI_SMAS3 = EAMI_SMAS3.pca$x[,1],
+  EAM_S = EAM_SMAS.pca$x[,1],
+  EAM_AS = EAM_SMAS3.pca$x[,1],
+  EAMI_S = EAMI_SMAS.pca$x[,1],
+  EAMI_AS = EAMI_SMAS3.pca$x[,1],
+  EAMI_AS3 = EAMI_AS3.pca$x[,1],
+  BSC_SMAS = df5$NewBSC[df5$Conditions == "SYNCH1PP"]-df5$NewBSCdf5$Conditions == "ASYNCH1PP"],
+
+  BSC_SMAS3 = df5$NewBSC[df5$Conditions == "SYNCH1PP"]-df5$NewBSC[df5$Conditions == "ASYNCH3PP"]
+)
+#jpeg(file="Corr_BSCANC_N20_MOD1.jpeg")
+ggscatter(dataframe, x = "BSC_SMAS", y = "EAM_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANC and BSCAgency synch-asynch 1pp")
+
+ggscatter(dataframe, x = "BSC_SMAS3", y = "EAM_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANC and BSCAgency synch-asynch 3pp")
+
+ggscatter(dataframe, x = "BSC_SMAS", y = "EAMI_SMAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANC and BSCAgency synch-asynch 1pp")
+
+ggscatter(dataframe, x = "BSC_SMAS3", y = "EAMI_SMAS3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANC and BSCAgency synch-asynch 3pp")
+ggscatter(MyCorrANCbsc, x = "BSC3", y = "Vall3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANC and BSCOwnership")
+ggscatter(MyCorrANCbsc, x = "BSC4", y = "Vall3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation BSC and ANC")
+ggscatter(MyCorrANCbsc, x = "BSC5", y = "Vall3", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANC and BSC corrected")
+
+
+#jpeg(file="eigenvalueDiff_N20.jpeg")
+
+ggscatter(ANC_BSC, x = "NewBSC", y = "E1", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANC and Perf")
+
+ggscatter(MyCorrANCbsc2, x = "MCQSynch", y = "AS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCSynch and AgencySynch")
+ggscatter(MyCorrANCbsc2, x = "MCQSynch", y = "OS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCSynch and OnwershipSynch")
+ggscatter(MyCorrANCbsc2, x = "MCQAsynch", y = "AA", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCAsynch and AgencyAsynch")
+ggscatter(MyCorrANCbsc2, x = "MCQAsynch", y = "OA", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCAsynch and OnwershipAsynch")
+ggscatter(MyCorrANCbsc2, x = "MCQAsynch3PP", y = "A3A", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCSynch and AgencyASynch3PP")
+ggscatter(MyCorrANCbsc2, x = "MCQAsynch3PP", y = "O3A", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCSynch and OnwershipASynch3pp")
+ggscatter(MyCorrANCbsc2, x = "EAMISynch", y = "AS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and AgencySynch")
+ggscatter(MyCorrANCbsc2, x = "EAMISynch", y = "OS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and OnwershipSynch")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch", y = "AA", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMIAsynch and AgencyAsynch")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch", y = "OA", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMIAsynch and OnwershipAsynch")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch3PP", y = "A3A", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and AgencyASynch3PP")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch3PP", y = "O3A", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and OnwershipASynch3pp")
+ggscatter(MyCorrANCbsc2, x = "EAMISynch", y = "OAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and BSCSynch")
+ggscatter(MyCorrANCbsc2, x = "EAMISynch", y = "OAS", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and BSCSynch")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch", y = "OAA", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMIAsynch and BSCAsynch")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch", y = "OAA", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMIAsynch and BSCAsynch")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch3PP", y = "OA3A", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and BSCASynch3PP")
+ggscatter(MyCorrANCbsc2, x = "EAMIAsynch3PP", y = "OA3A", 
+          add = "reg.line", conf.int = TRUE, 
+          cor.coef = TRUE, cor.method = "pearson",
+          xlab = "BSC", ylab = " Val",main = "Correlation ANCEAMISynch and BSCASynch3pp")
+
+
+#jpeg(file="eigenvalueDiff_N20.jpeg")
+fviz_eig(EAMDiff.pca,addlabels = TRUE) # 8-9 PC to explain 95% of variance
+#dev.off()
+
+t.test(EAMSynch.pca$x[,1], EAMAsynch.pca$x[,1], paired = TRUE, alternative = "two.sided")
+
+#dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
