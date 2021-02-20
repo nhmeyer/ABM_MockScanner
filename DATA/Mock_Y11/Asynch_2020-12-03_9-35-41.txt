@@ -1,0 +1,5 @@
+﻿[Experiment]
+[Routine:Env1][Condition:default-T1_Env1][Time(ms):1486.6549])
+[Routine:Env2][Condition:default-T1_Env2][Time(ms):6327.6612])
+[Routine:Env4][Condition:default-T1_Env4][Time(ms):12136.5869])
+[Routine:Env1][Condition:default-F2_Env1][Time(ms):20626.0057])

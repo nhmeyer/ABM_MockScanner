@@ -1,0 +1,13 @@
+﻿[Experiment]
+[Routine:Q1][Condition:default-T1_Env1][Time(ms):2831.6084])
+1301
+[Routine:Q2][Condition:default-T1_Env1][Time(ms):4146.4775])
+1867
+[Routine:Q1][Condition:default-T1_Env2][Time(ms):8192.8444])
+834
+[Routine:Q2][Condition:default-T1_Env2][Time(ms):9035.7472])
+2768
+[Routine:Q1][Condition:default-T1_Env4][Time(ms):13838.3587])
+2368
+[Routine:Q2][Condition:default-T1_Env4][Time(ms):16229.985])
+4034
